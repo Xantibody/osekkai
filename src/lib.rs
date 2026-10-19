@@ -7,9 +7,11 @@
 
 pub mod doc;
 pub mod rules;
+pub mod state;
 
 pub use doc::Document;
 pub use rules::Finding;
+pub use state::State;
 
 /// Lint a Markdown source and return every finding, ordered by line.
 pub fn lint(src: &str) -> Vec<Finding> {
