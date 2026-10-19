@@ -6,6 +6,7 @@ use crate::doc::Document;
 use crate::state::State;
 use crate::Options;
 
+mod decision_first;
 mod max_list_block_items;
 mod max_list_item_lines;
 mod max_section_lines;
@@ -49,6 +50,7 @@ const STATEFUL: &[StateRule] = &[
     no_absolute_amount::check,
     no_heading::check,
     max_top_items::check,
+    decision_first::check,
 ];
 
 pub fn run(doc: &Document, options: &Options) -> Vec<Finding> {
