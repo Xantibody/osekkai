@@ -64,3 +64,12 @@ pub fn first_paragraph(item: &markdown::mdast::ListItem) -> Option<&Node> {
         .iter()
         .find(|c| matches!(c, Node::Paragraph(_)))
 }
+
+impl Document {
+    /// The source text a node was parsed from, empty when the position is unknown.
+    pub fn source_of(&self, node: &Node) -> &str {
+        node.position()
+            .map(|p| &self.src[p.start.offset..p.end.offset])
+            .unwrap_or("")
+    }
+}

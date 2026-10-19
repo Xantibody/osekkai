@@ -4,6 +4,7 @@ use serde::Serialize;
 
 use crate::doc::Document;
 
+mod max_list_item_lines;
 mod no_list_item_colon;
 mod no_sentence_chain_in_list_item;
 
@@ -21,6 +22,7 @@ type Rule = fn(&Document, &mut Vec<Finding>);
 const STRUCTURAL: &[Rule] = &[
     no_list_item_colon::check,
     no_sentence_chain_in_list_item::check,
+    max_list_item_lines::check,
 ];
 
 pub fn run(doc: &Document) -> Vec<Finding> {
