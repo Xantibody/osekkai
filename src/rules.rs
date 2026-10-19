@@ -8,6 +8,7 @@ mod max_list_block_items;
 mod max_list_item_lines;
 mod max_section_lines;
 mod no_list_item_colon;
+mod no_list_item_separator;
 mod no_sentence_chain_in_list_item;
 mod postscript_last;
 
@@ -24,6 +25,7 @@ type Rule = fn(&Document, &mut Vec<Finding>);
 
 const STRUCTURAL: &[Rule] = &[
     no_list_item_colon::check,
+    no_list_item_separator::check,
     no_sentence_chain_in_list_item::check,
     max_list_item_lines::check,
     max_list_block_items::check,

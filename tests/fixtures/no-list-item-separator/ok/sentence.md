@@ -1,0 +1,2 @@
+- 本文を textlint にかける `lint-body` を home-manager で配る
+- 2024-01-02 のような日付の中のハイフンは見ない
