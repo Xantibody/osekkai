@@ -4,6 +4,8 @@ use serde::Serialize;
 
 use crate::doc::Document;
 
+mod no_list_item_colon;
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Finding {
     #[serde(rename = "ruleId")]
@@ -15,7 +17,7 @@ pub struct Finding {
 
 type Rule = fn(&Document, &mut Vec<Finding>);
 
-const STRUCTURAL: &[Rule] = &[];
+const STRUCTURAL: &[Rule] = &[no_list_item_colon::check];
 
 pub fn run(doc: &Document) -> Vec<Finding> {
     let mut out = Vec::new();

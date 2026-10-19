@@ -35,3 +35,32 @@ pub fn walk<'a>(node: &'a Node, f: &mut dyn FnMut(&'a Node)) {
         }
     }
 }
+
+/// Concatenated text of a node, skipping code spans, raw HTML and links.
+/// Links are skipped whole: an autolinked URL is a Text child of the Link,
+/// and its colons and periods are not prose.
+pub fn plain_text(node: &Node) -> String {
+    fn collect(node: &Node, out: &mut String) {
+        match node {
+            Node::Text(t) => out.push_str(&t.value),
+            Node::Link(_) => {}
+            _ => {
+                if let Some(children) = node.children() {
+                    for child in children {
+                        collect(child, out);
+                    }
+                }
+            }
+        }
+    }
+    let mut out = String::new();
+    collect(node, &mut out);
+    out
+}
+
+/// The paragraph that opens a list item, if any.
+pub fn first_paragraph(item: &markdown::mdast::ListItem) -> Option<&Node> {
+    item.children
+        .iter()
+        .find(|c| matches!(c, Node::Paragraph(_)))
+}
