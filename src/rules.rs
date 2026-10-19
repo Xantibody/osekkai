@@ -9,6 +9,7 @@ use crate::Options;
 mod max_list_block_items;
 mod max_list_item_lines;
 mod max_section_lines;
+mod no_absolute_amount;
 mod no_list_item_colon;
 mod no_list_item_separator;
 mod no_person_name;
@@ -41,7 +42,7 @@ const STRUCTURAL: &[Rule] = &[
 /// trigger and stays silent for other states.
 type StateRule = fn(&Document, &State, &mut Vec<Finding>);
 
-const STATEFUL: &[StateRule] = &[no_person_name::check];
+const STATEFUL: &[StateRule] = &[no_person_name::check, no_absolute_amount::check];
 
 pub fn run(doc: &Document, options: &Options) -> Vec<Finding> {
     let mut out = Vec::new();
