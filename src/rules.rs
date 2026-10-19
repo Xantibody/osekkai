@@ -9,6 +9,7 @@ use crate::Options;
 mod max_list_block_items;
 mod max_list_item_lines;
 mod max_section_lines;
+mod max_top_items;
 mod no_absolute_amount;
 mod no_heading;
 mod no_list_item_colon;
@@ -47,6 +48,7 @@ const STATEFUL: &[StateRule] = &[
     no_person_name::check,
     no_absolute_amount::check,
     no_heading::check,
+    max_top_items::check,
 ];
 
 pub fn run(doc: &Document, options: &Options) -> Vec<Finding> {
