@@ -1,0 +1,3 @@
+- `lint-body` — 本文を textlint にかける wrapper
+- 設定 – store パスで焼き込む
+- [ ] hook - gh を止める
