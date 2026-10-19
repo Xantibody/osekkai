@@ -11,6 +11,7 @@ mod max_list_item_lines;
 mod max_section_lines;
 mod no_list_item_colon;
 mod no_list_item_separator;
+mod no_person_name;
 mod no_sentence_chain_in_list_item;
 mod postscript_last;
 mod state_first;
@@ -40,7 +41,7 @@ const STRUCTURAL: &[Rule] = &[
 /// trigger and stays silent for other states.
 type StateRule = fn(&Document, &State, &mut Vec<Finding>);
 
-const STATEFUL: &[StateRule] = &[];
+const STATEFUL: &[StateRule] = &[no_person_name::check];
 
 pub fn run(doc: &Document, options: &Options) -> Vec<Finding> {
     let mut out = Vec::new();
