@@ -18,6 +18,7 @@ mod no_list_item_separator;
 mod no_person_name;
 mod no_sentence_chain_in_list_item;
 mod postscript_last;
+mod require_heading;
 mod state_first;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -51,6 +52,7 @@ const STATEFUL: &[StateRule] = &[
     no_heading::check,
     max_top_items::check,
     decision_first::check,
+    require_heading::check,
 ];
 
 pub fn run(doc: &Document, options: &Options) -> Vec<Finding> {
