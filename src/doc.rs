@@ -73,3 +73,16 @@ impl Document {
             .unwrap_or("")
     }
 }
+
+// AIDEV-NOTE: 40 full-width characters per rendered line is a guess at how a
+// GitHub PR body wraps; plan 未決事項 4 decides the real unit.
+const CELLS_PER_LINE: usize = 80;
+
+/// Lines a reader sees when `src` is rendered: each source line wrapped at
+/// `CELLS_PER_LINE` display cells, never less than one.
+pub fn rendered_lines(src: &str) -> usize {
+    use unicode_width::UnicodeWidthStr;
+    src.lines()
+        .map(|l| l.trim().width().div_ceil(CELLS_PER_LINE).max(1))
+        .sum()
+}

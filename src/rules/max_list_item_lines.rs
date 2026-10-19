@@ -3,16 +3,12 @@
 //! this rule runs, so a PR body is always one source line per bullet.
 
 use markdown::mdast::Node;
-use unicode_width::UnicodeWidthStr;
 
 use super::Finding;
-use crate::doc::{first_paragraph, start, walk, Document};
+use crate::doc::{first_paragraph, rendered_lines, start, walk, Document};
 
 pub const ID: &str = "max-list-item-lines";
 const MAX_LINES: usize = 3;
-// AIDEV-NOTE: 40 full-width characters per rendered line is a guess at how a
-// GitHub PR body wraps; plan 未決事項 4 decides the real unit.
-const CELLS_PER_LINE: usize = 80;
 
 pub fn check(doc: &Document, out: &mut Vec<Finding>) {
     walk(&doc.root, &mut |node| {
@@ -34,10 +30,4 @@ pub fn check(doc: &Document, out: &mut Vec<Finding>) {
             ),
         });
     });
-}
-
-fn rendered_lines(src: &str) -> usize {
-    src.lines()
-        .map(|l| l.trim().width().div_ceil(CELLS_PER_LINE).max(1))
-        .sum()
 }
