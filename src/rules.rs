@@ -3,6 +3,8 @@
 use serde::Serialize;
 
 use crate::doc::Document;
+use crate::state::State;
+use crate::Options;
 
 mod max_list_block_items;
 mod max_list_item_lines;
@@ -11,6 +13,7 @@ mod no_list_item_colon;
 mod no_list_item_separator;
 mod no_sentence_chain_in_list_item;
 mod postscript_last;
+mod state_first;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Finding {
@@ -33,10 +36,22 @@ const STRUCTURAL: &[Rule] = &[
     postscript_last::check,
 ];
 
-pub fn run(doc: &Document) -> Vec<Finding> {
+/// Rules that a declared reader state switches on. Each one checks its own
+/// trigger and stays silent for other states.
+type StateRule = fn(&Document, &State, &mut Vec<Finding>);
+
+const STATEFUL: &[StateRule] = &[];
+
+pub fn run(doc: &Document, options: &Options) -> Vec<Finding> {
     let mut out = Vec::new();
     for rule in STRUCTURAL {
         rule(doc, &mut out);
+    }
+    state_first::check(doc, options, &mut out);
+    if let Some(Ok(state)) = doc.declaration.as_ref().map(|d| &d.state) {
+        for rule in STATEFUL {
+            rule(doc, state, &mut out);
+        }
     }
     out
 }

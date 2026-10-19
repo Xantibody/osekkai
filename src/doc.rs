@@ -1,22 +1,58 @@
 //! A parsed Markdown document with the helpers rules need.
 
+use std::sync::LazyLock;
+
 use markdown::mdast::Node;
 use markdown::{to_mdast, ParseOptions};
+use regex::Regex;
+
+use crate::state::{ParseError, State};
 
 pub struct Document {
     pub src: String,
     pub root: Node,
+    /// The reader state declared in the document, if a declaration comment exists.
+    pub declaration: Option<Declaration>,
 }
+
+/// `<!-- osekkai: people=unknown purpose=inform -->` as found in the document.
+/// GitHub does not render HTML comments, so the declaration can stay in a PR body.
+pub struct Declaration {
+    pub state: Result<State, ParseError>,
+    /// Index among the top-level blocks; the declaration belongs at 0.
+    pub index: usize,
+    pub line: usize,
+}
+
+static DECLARATION: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?s)^<!--\s*osekkai:\s*(.*?)\s*-->$").expect("valid regex"));
 
 impl Document {
     pub fn parse(src: &str) -> Self {
         // GFM so tables, task lists and autolink literals parse the way GitHub renders PR bodies.
         let root = to_mdast(src, &ParseOptions::gfm()).expect("markdown has no syntax errors");
+        let declaration = find_declaration(&root);
         Self {
             src: src.to_owned(),
             root,
+            declaration,
         }
     }
+}
+
+fn find_declaration(root: &Node) -> Option<Declaration> {
+    root.children()?
+        .iter()
+        .enumerate()
+        .find_map(|(index, block)| {
+            let Node::Html(html) = block else { return None };
+            let body = DECLARATION.captures(html.value.trim())?.get(1)?.as_str();
+            Some(Declaration {
+                state: State::parse(body),
+                index,
+                line: start(block).0,
+            })
+        })
 }
 
 /// 1-based start line and column of a node, (0, 0) when unknown.

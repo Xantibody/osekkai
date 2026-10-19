@@ -13,10 +13,22 @@ pub use doc::Document;
 pub use rules::Finding;
 pub use state::State;
 
-/// Lint a Markdown source and return every finding, ordered by line.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct Options {
+    /// Report a document that declares no reader state. Off by default so a
+    /// body written without the skill is judged on its structure alone.
+    pub require_state: bool,
+}
+
+/// Lint a Markdown source with default options.
 pub fn lint(src: &str) -> Vec<Finding> {
+    lint_with(src, &Options::default())
+}
+
+/// Lint a Markdown source and return every finding, ordered by line.
+pub fn lint_with(src: &str, options: &Options) -> Vec<Finding> {
     let doc = Document::parse(src);
-    let mut out = rules::run(&doc);
+    let mut out = rules::run(&doc, options);
     out.sort_by_key(|f| (f.line, f.column));
     out
 }
