@@ -273,6 +273,43 @@ impl State {
     }
 }
 
+impl State {
+    /// What the declared values ask of the writer: guidance to follow and
+    /// the lint rules they switch on. Printed by `osekkai state show`.
+    pub fn describe(&self) -> String {
+        let declared = self.declared();
+        if declared.is_empty() {
+            return "宣言された次元がない。osekkai state list で次元と値を見る\n".to_owned();
+        }
+        let mut out = String::new();
+        for (d, v) in declared {
+            out.push_str(&format!(
+                "{} = {}（{}={}）\n  {}\n",
+                d.label, v.label, d.key, v.key, v.guidance
+            ));
+            if !v.rules.is_empty() {
+                out.push_str(&format!("  lint: {}\n", v.rules.join(", ")));
+            }
+        }
+        out
+    }
+}
+
+/// Every dimension with its values, one line each. Printed by `osekkai state list`.
+pub fn list() -> String {
+    DIMENSIONS
+        .iter()
+        .map(|d| {
+            let values: Vec<String> = d
+                .values
+                .iter()
+                .map(|v| format!("{}（{}）", v.key, v.label))
+                .collect();
+            format!("{}（{}）: {}\n", d.key, d.label, values.join(" / "))
+        })
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

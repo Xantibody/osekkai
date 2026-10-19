@@ -6,6 +6,7 @@
 //! of the text stays in the skill.
 
 pub mod doc;
+pub mod procedure;
 pub mod rules;
 pub mod state;
 

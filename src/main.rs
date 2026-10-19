@@ -17,7 +17,29 @@ enum Command {
         files: Vec<PathBuf>,
         #[arg(long, value_enum, default_value_t = Format::Text)]
         format: Format,
+        /// Report a document that declares no reader state
+        #[arg(long)]
+        require_state: bool,
     },
+    /// The reader state: its vocabulary, and what a declared state changes
+    State {
+        #[command(subcommand)]
+        command: StateCommand,
+    },
+    /// The fixed order of steps; with --check, verify a skill text keeps it
+    Steps {
+        /// A SKILL.md whose <!-- osekkai-step: ... --> anchors must follow the order
+        #[arg(long)]
+        check: Option<PathBuf>,
+    },
+}
+
+#[derive(Subcommand)]
+enum StateCommand {
+    /// Every dimension and its values
+    List,
+    /// Guidance and lint rules for a declared state, e.g. `people=unknown purpose=inform`
+    Show { declaration: Vec<String> },
 }
 
 #[derive(Clone, Copy, ValueEnum)]
@@ -28,7 +50,46 @@ enum Format {
 
 fn main() -> ExitCode {
     match Cli::parse().command {
-        Command::Lint { files, format } => lint(&files, format),
+        Command::Lint {
+            files,
+            format,
+            require_state,
+        } => lint(&files, format, &osekkai::Options { require_state }),
+        Command::State {
+            command: StateCommand::List,
+        } => {
+            print!("{}", osekkai::state::list());
+            ExitCode::SUCCESS
+        }
+        Command::State {
+            command: StateCommand::Show { declaration },
+        } => match osekkai::State::parse(&declaration.join(" ")) {
+            Ok(state) => {
+                print!("{}", state.describe());
+                ExitCode::SUCCESS
+            }
+            Err(e) => {
+                eprintln!("{e}");
+                ExitCode::from(2)
+            }
+        },
+        Command::Steps { check: None } => {
+            print!("{}", osekkai::procedure::describe());
+            ExitCode::SUCCESS
+        }
+        Command::Steps { check: Some(path) } => match std::fs::read_to_string(&path) {
+            Ok(text) => match osekkai::procedure::check_anchors(&text) {
+                Ok(()) => ExitCode::SUCCESS,
+                Err(e) => {
+                    eprintln!("{}: {e}", path.display());
+                    ExitCode::from(1)
+                }
+            },
+            Err(e) => {
+                eprintln!("{}: {e}", path.display());
+                ExitCode::from(2)
+            }
+        },
     }
 }
 
@@ -39,7 +100,7 @@ struct FileResult<'a> {
     messages: Vec<osekkai::Finding>,
 }
 
-fn lint(files: &[PathBuf], format: Format) -> ExitCode {
+fn lint(files: &[PathBuf], format: Format, options: &osekkai::Options) -> ExitCode {
     let mut results = Vec::new();
     for path in files {
         let src = match std::fs::read_to_string(path) {
@@ -49,7 +110,10 @@ fn lint(files: &[PathBuf], format: Format) -> ExitCode {
                 return ExitCode::from(2);
             }
         };
-        results.push((path.display().to_string(), osekkai::lint(&src)));
+        results.push((
+            path.display().to_string(),
+            osekkai::lint_with(&src, options),
+        ));
     }
     let found = results.iter().any(|(_, f)| !f.is_empty());
     match format {
