@@ -29,6 +29,14 @@
 
       checks = forAll (pkgs: {
         osekkai = self.packages.${pkgs.stdenv.hostPlatform.system}.osekkai;
+        # The skill text must keep the four step anchors in the binary's order.
+        skill =
+          pkgs.runCommand "osekkai-skill"
+            { nativeBuildInputs = [ self.packages.${pkgs.stdenv.hostPlatform.system}.osekkai ]; }
+            ''
+              osekkai steps --check ${./skills/osekkai/SKILL.md}
+              touch $out
+            '';
         fmt =
           pkgs.runCommand "osekkai-fmt" { nativeBuildInputs = [ pkgs.rustfmt ]; }
             ''

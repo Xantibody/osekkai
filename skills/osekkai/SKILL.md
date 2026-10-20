@@ -1,0 +1,176 @@
+---
+name: osekkai
+description: The author's way of turning a source text — a chat log, an investigation, a meeting — into a short Markdown summary for a named reader. Declare who the reader is, draft under that reader's state, make `osekkai lint` pass, hand over. Other skills (explain, pull-request, issue) load it as the base for any prose a human reads.
+when_to_use: 文章をまとめる、要約する、報告にする、別の読み手向けに書き直すとき — 「まとめて」「要約して」「報告書にして」「〇〇向けに書き直して」「調査メモにして」「議論を整理して」。PR 本文や作業報告など、explain skill が読み込むときも。
+---
+
+# osekkai
+
+The reader decides the summary. The same source becomes four bullets with
+no headings for someone who only needs to know what is going on, and a
+decision request with options and open items for someone who has to
+decide. So the reader is fixed before a word is written, and what the
+reader knows is written into the document itself.
+
+`osekkai` holds the part that must not be skipped — four steps, printed by
+`osekkai steps` — and the vocabulary of reader states. Everything else in
+this file is how the author drafts, and may be reordered or extended. The
+steps carry an HTML-comment anchor each; `osekkai steps --check`
+on this file keeps them in order.
+
+## 0. Read the source and pick the reader
+
+Read the whole source once before deciding anything. Then name the reader
+in a sentence: who, and what they will do with the text (know about it,
+decide something, do something). A PR body's reader is the reviewer; a
+report's reader is the user who asked. If the request names no reader,
+ask, or state the assumption in the hand-over.
+
+<!-- osekkai-step: declare-state -->
+
+## 1. Declare the reader's state
+
+The state has five dimensions. Four say what the reader already knows,
+each `known` or `unknown`; the fifth says what they will do.
+
+| key | question |
+| --- | --- |
+| `people` | Do they know the people named in the source? |
+| `system` | Do they know the systems and tools by name? |
+| `cost` | Do they have a sense of the amounts involved? |
+| `history` | Do they know why this topic is up now? |
+| `purpose` | `inform`, `decide` or `act` |
+
+Write the declaration as the first block of the document, then read the
+guidance for it:
+
+```markdown
+<!-- osekkai: people=unknown system=unknown cost=unknown history=unknown purpose=inform -->
+```
+
+```sh
+osekkai state show people=unknown system=unknown cost=unknown history=unknown purpose=inform
+```
+
+`state show` prints, per value, what to keep and what to cut, and which
+lint rules it turns on. `osekkai state list` prints the whole vocabulary.
+Declare only the dimensions the source touches; a text with no amounts
+needs no `cost`. The declaration is an HTML comment, so GitHub does not
+render it and a PR body can keep it.
+
+<!-- osekkai-step: draft -->
+
+## 2. Draft
+
+Drafting is a loop between the whole and the parts, not a single pass.
+The author's own order:
+
+1. **Place a working title.** Find the most abstract thing the source is
+   about (「CI のビルド高速化調査」, not 「DB コンテナの立て直し」). It is
+   provisional; the review at the end may change it.
+2. **Choose the middle structure.** Much material becomes `##` sections;
+   little becomes a bulleted list. When unsure, start wide (概要 / 詳細)
+   and fill it in.
+3. **Fold what did not grow.** If a section holds one or two bullets,
+   collapse the sections into one list. The author's example went from
+   two headings to a single nested list.
+4. **Walk between concrete and abstract.** The first grouping is by
+   whatever you noticed first and is allowed to be wrong; move items when
+   the review shows a better axis. Do not expect to get it right once.
+5. **Do not promote a weak cause to the conclusion.** The source may say
+   X caused Y; check that the timing and the facts fit before leading
+   with it. In the author's example the source blamed a container
+   restart for a slowdown that started last week, but the restart was
+   older than that, so it stayed a finding, not the conclusion. If the
+   source gives no recommendation, write none of your own.
+6. **Apply the reader's state.** For each fact, keep, cut, or add a
+   one-line gloss, following the `state show` guidance:
+   - `people=unknown`: drop names, keep what was said. `known`: names
+     alone suffice, and when opinions split, keep who said what so the
+     reader knows whom to ask.
+   - `system=unknown`: gloss the main system in a phrase (「監視サービスは、
+     システムの状態を記録して障害を知らせるもの」); details that would need a
+     gloss of their own are cut whole.
+   - `cost=unknown`: write ratios (「今の半分ほど」). `known`: list the
+     amounts per option and omit the current figure.
+   - `history=unknown`: say why this is being discussed now. `known`:
+     conclusion and delta only.
+   - `purpose=inform`: a few bullets on what is happening, no headings,
+     and no decision material. `purpose=decide`: the request and its
+     deadline first, then `## 案` and `## 未確定`. `purpose=act` has no
+     worked example yet; ask the user what the reader needs to do.
+7. **Move asides out.** Anything true but off the main line goes after
+   the list, as a paragraph starting 「蛇足だが」. Only one, only last.
+8. **Review the whole.** Reread as the reader. Is anything missing that
+   they need? Did a fact the source itself lacks (an unstated
+   assumption in an estimate) make it in as an open item? Does the title
+   still fit?
+
+### Sentence shape
+
+- Every bullet has a subject: 「xx は○○」. 「xx が○○のため、△△は■■」 is
+  still one bullet when it is one point.
+- Prefer the clipped ending (「問題なし」, 「推奨」) over full sentences.
+- Compress by default; add only when the reader cannot follow without it.
+- One word per thing. A synonym reads as a second thing.
+- When the same explanation appears twice, merge the two places or split
+  them so each says it once.
+- No colon inside a bullet (`- 調査結果: キャッシュは問題なし`), no second
+  sentence inside a bullet (`- A。B。`), no ` — ` or `**label**:` joining a
+  head to a body. The head becomes the bullet, the body its children.
+
+### Density
+
+The author's limit is what a reader takes in at a glance: about three
+rendered lines per bullet, about twelve per section, five items under one
+parent with fewer at each deeper level, and four top-level items when the
+purpose is `inform`. The exact thresholds live in the binary; the lint
+reports them. When it fires, the fix is to merge siblings, lift a level
+up, or cut a section — never to shorten words until the count passes.
+
+<!-- osekkai-step: lint -->
+
+## 3. Lint until clean
+
+```sh
+osekkai lint <file>
+```
+
+Exit 0 means hand over. Each finding names the rule; this is how to fix
+each:
+
+| rule | fix |
+| --- | --- |
+| `state-first`, `state-declaration` | Move the declaration to the first block; a value it rejects is not in `osekkai state list` |
+| `no-list-item-colon`, `no-list-item-separator` | The head becomes the bullet, what followed the colon becomes child bullets or one sentence |
+| `no-sentence-chain-in-list-item` | Split at the 「。」 into sibling or child bullets, or rewrite as one point |
+| `max-list-item-lines` | The bullet holds two points; split it, or move detail to a child |
+| `max-list-block-items`, `max-top-items` | Merge siblings that share an axis, or lift a group into a section |
+| `max-section-lines` | Split the section, or cut what the reader's state says to cut |
+| `postscript-last` | Move the 「蛇足だが」 paragraph after the last list, outside any bullet |
+| `no-person-name` | Drop the name, keep the statement |
+| `no-absolute-amount` | Replace the figure with a ratio to the current one |
+| `no-heading` | Flatten to a single list; the reader only needs to know |
+| `decision-first` | Put the request and its deadline in the first bullet |
+| `require-heading` | Add `## 案` and `## 未確定` and sort the items into them |
+
+Japanese wording (ですます, 漢字の開き, spacing) is textlint's job, via
+`lint-body` where it is installed; `osekkai` does not check it.
+
+<!-- osekkai-step: hand-over -->
+
+## 4. Hand over
+
+Deliver the text with the declaration still in it when the destination
+hides HTML comments (GitHub PR and issue bodies, most Markdown renderers).
+Where the comment would show — a chat message, an email — delete the
+first line by hand before pasting. State the reader you assumed if the
+request did not name one.
+
+## Worked examples
+
+`tests/fixtures/examples/` in the osekkai repository holds the author's
+accepted outputs: one investigation memo for a teammate, and one
+discussion summarized twice, for an outsider and for the manager who has
+to decide. Read them to see the state change the shape before writing a
+new kind of document.
