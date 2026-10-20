@@ -1,11 +1,49 @@
 # osekkai
 
-文章のまとめ方を Claude Code（と codex）に持たせるための skill と、その行動を支えるガードレールの lint。
+r-aizawa がわかりやすいと感じる文に、どんな文章もまとめるための skill と、その手順を支える lint。
+
+## コンセプト
+
+- **r-aizawa にわかりやすい文にまとめること**。PR 本文、issue、作業報告、調査メモ、議論の要約のすべてが下敷きにする、文章の基礎
+- **手順は r-aizawa 個人のまとめ方に依存すること**。一般的な文章術ではなく、本人が例題を書いて言語化した作業順と判断をそのまま持つ。読み手を先に決め、その読み手が知らない語を消し、圧縮する方向で書く
+- **意味を読む判断は skill に、文字と構造で判定できる規則と守るべき順序はバイナリに置くこと**。しきい値の数はバイナリだけが持ち、skill は鳴ったらどう直すかだけを知る
+- **まとめた文章とその過程はローカルにだけ残すこと**。元の文には見せたくない情報が入りうるので、このリポジトリには架空の例題だけを置く
+
+## 手順
+
+太枠がバイナリの持つ段で、`osekkai steps` が印字する。残りは skill の手順で、順番を入れ替えても足してもよい。
+
+```mermaid
+flowchart TD
+  src["元の文"] --> reader["読み手を決める"]
+  reader --> declare["ステートを宣言する<br/>osekkai state show で guidance を読む"]
+  declare --> draft
+  subgraph draft ["下書き"]
+    direction TB
+    title["主題を仮に置く"] --> frame["骨組みを決める<br/>多ければ章、少なければ箇条"]
+    frame --> fill["中身を入れ、広がらなければ畳む"]
+    fill --> state["ステートに照らして残す・消す・説明を添える"]
+    state --> aside["本筋から外れたものは蛇足として最後に"]
+    aside --> review["全体を見直す<br/>主題、分類、足りない情報"]
+    review -. 直す .-> title
+  end
+  draft --> lint{"osekkai lint"}
+  lint -- 指摘 --> draft
+  lint -- 通る --> hand["渡す"]
+  hand -.-> local["ローカルの記録<br/>.ai/osekkai/"]
+
+  classDef bin stroke:#3fb950,stroke-width:3px
+  class declare,lint bin
+```
 
 - `osekkai` は Rust の単体バイナリで、Markdown の箇条の構造と読み手のステートを lint し、守るべき手順を印字する
 - `skills/osekkai/SKILL.md` は文章をまとめる手順の skill。4 段のアンカーを持ち、`nix flake check` が順序を確かめる
 
 設計の経緯は `.ai/`（gitignore 下）にある。
+
+## ローカルの記録
+
+skill は渡した文章を `.ai/osekkai/<日付>-<題名>.md` に残す。宣言コメント、最終の本文、誰向けに書いたかを 1 ファイルにし、手順を見直すときの材料にする。`.ai/` は commit しない。実際の仕事の文章には見せたくない情報が入るので、このリポジトリに置く例題は架空のものだけにする。
 
 ## 使い方
 
