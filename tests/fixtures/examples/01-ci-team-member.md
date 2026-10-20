@@ -1,4 +1,4 @@
-<!-- osekkai: people=known system=known cost=known history=known purpose=inform -->
+<!-- osekkai: history=known purpose=inform -->
 
 - 調査結果
     - キャッシュ

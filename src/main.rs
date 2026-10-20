@@ -38,7 +38,7 @@ enum Command {
 enum StateCommand {
     /// Every dimension and its values
     List,
-    /// Guidance and lint rules for a declared state, e.g. `people=unknown purpose=inform`
+    /// Guidance and lint rules for a declared state, e.g. `unknown=鈴木,APM purpose=inform`
     Show { declaration: Vec<String> },
 }
 

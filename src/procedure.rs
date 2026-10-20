@@ -13,7 +13,7 @@ pub const STEPS: &[Step] = &[
     Step {
         id: "declare-state",
         title: "読み手のステートを決め、本文の先頭に宣言する",
-        detail: "<!-- osekkai: people=... purpose=... --> を最初のブロックに置き、osekkai state show で guidance を読む",
+        detail: "<!-- osekkai: unknown=... purpose=... --> を最初のブロックに置き、osekkai state show で guidance を読む",
     },
     Step {
         id: "draft",

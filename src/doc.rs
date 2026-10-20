@@ -15,7 +15,7 @@ pub struct Document {
     pub declaration: Option<Declaration>,
 }
 
-/// `<!-- osekkai: people=unknown purpose=inform -->` as found in the document.
+/// `<!-- osekkai: unknown=鈴木,APM purpose=inform -->` as found in the document.
 /// GitHub does not render HTML comments, so the declaration can stay in a PR body.
 pub struct Declaration {
     pub state: Result<State, ParseError>,

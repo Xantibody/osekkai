@@ -1,4 +1,4 @@
-<!-- osekkai: people=known system=known cost=known history=unknown purpose=decide -->
+<!-- osekkai: history=unknown purpose=decide -->
 
 # 監視基盤移行の判断依頼
 

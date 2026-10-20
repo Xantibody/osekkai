@@ -18,7 +18,7 @@ pub fn check(doc: &Document, options: &Options, out: &mut Vec<Finding>) {
                 rule: ID,
                 line: 1,
                 column: 1,
-                message: "読み手のステートが宣言されていない。<!-- osekkai: people=... purpose=... --> を先頭に置く".to_owned(),
+                message: "読み手のステートが宣言されていない。<!-- osekkai: unknown=... purpose=... --> を先頭に置く".to_owned(),
             });
         }
         return;

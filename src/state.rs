@@ -6,6 +6,11 @@
 //! Each value carries two kinds of effect. `guidance` needs the meaning of
 //! the text and is printed for the skill to follow; `rules` can be judged
 //! from characters and structure and are enabled in the lint.
+//!
+//! What the reader knows is one term list, not a dimension per kind of
+//! thing. People, systems and amounts were once three `known`/`unknown`
+//! dimensions; they were the examples the first two documents happened to
+//! contain, and each new document would have added another.
 
 use std::fmt;
 
@@ -31,9 +36,8 @@ pub struct State {
     /// document. Which words those are cannot be enumerated here: a name,
     /// a product and a figure are all the same question to the reader.
     pub unknown: Vec<String>,
-    pub people: Option<Knowledge>,
-    pub system: Option<Knowledge>,
-    pub cost: Option<Knowledge>,
+    /// Whether the reader knows why this topic is up now. Not a term, so
+    /// it stays a dimension of its own.
     pub history: Option<Knowledge>,
     pub purpose: Option<Purpose>,
 }
@@ -74,60 +78,6 @@ pub const DIMENSIONS: &[Dimension] = &[
             guidance: "宣言した語を本文に出さない。言い換えるか、説明に置き換えるか、消す。名前を残して一言説明を添える語は宣言に入れない",
             rules: &["no-unknown-term"],
         }),
-    },
-    Dimension {
-        key: "people",
-        label: "人物",
-        kind: Kind::Choice(&[
-            Value {
-                key: KNOWN,
-                label: "知っている",
-                guidance: "名前だけで通じる。意見が割れていれば発言者を残す",
-                rules: &[],
-            },
-            Value {
-                key: UNKNOWN,
-                label: "知らない",
-                guidance: "名前を消し、何が言われたかだけ残す",
-                rules: &["no-person-name"],
-            },
-        ]),
-    },
-    Dimension {
-        key: "system",
-        label: "システム",
-        kind: Kind::Choice(&[
-            Value {
-                key: KNOWN,
-                label: "知っている",
-                guidance: "固有名詞のまま",
-                rules: &[],
-            },
-            Value {
-                key: UNKNOWN,
-                label: "知らない",
-                guidance: "一言説明を添える。説明しないと通じない細部は丸ごと消す",
-                rules: &[],
-            },
-        ]),
-    },
-    Dimension {
-        key: "cost",
-        label: "費用感",
-        kind: Kind::Choice(&[
-            Value {
-                key: KNOWN,
-                label: "知っている",
-                guidance: "案の金額だけ並べる。現状値は書かない",
-                rules: &[],
-            },
-            Value {
-                key: UNKNOWN,
-                label: "知らない",
-                guidance: "比で書く（今の半分ほど）",
-                rules: &["no-absolute-amount"],
-            },
-        ]),
     },
     Dimension {
         key: "history",
@@ -274,9 +224,6 @@ impl State {
                 self.unknown = terms(key, value)?;
                 Ok(())
             }
-            "people" => put(&mut self.people, key, knowledge(key, value)?),
-            "system" => put(&mut self.system, key, knowledge(key, value)?),
-            "cost" => put(&mut self.cost, key, knowledge(key, value)?),
             "history" => put(&mut self.history, key, knowledge(key, value)?),
             "purpose" => {
                 let purpose = match value {
@@ -333,9 +280,6 @@ impl State {
             })
         }
         match dimension {
-            "people" => k(self.people),
-            "system" => k(self.system),
-            "cost" => k(self.cost),
             "history" => k(self.history),
             "purpose" => self.purpose.map(|p| match p {
                 Purpose::Inform => "inform",
@@ -415,14 +359,8 @@ mod tests {
 
     #[test]
     fn parses_each_dimension() {
-        let s = State::parse(
-            "unknown=鈴木,APM people=unknown system=known cost=unknown history=known purpose=decide",
-        )
-        .unwrap();
+        let s = State::parse("unknown=鈴木,APM history=known purpose=decide").unwrap();
         assert_eq!(s.unknown, vec!["鈴木", "APM"]);
-        assert_eq!(s.people, Some(Knowledge::Unknown));
-        assert_eq!(s.system, Some(Knowledge::Known));
-        assert_eq!(s.cost, Some(Knowledge::Unknown));
         assert_eq!(s.history, Some(Knowledge::Known));
         assert_eq!(s.purpose, Some(Purpose::Decide));
     }
@@ -464,12 +402,12 @@ mod tests {
             })
         );
         assert_eq!(
-            State::parse("people"),
-            Err(ParseError::Malformed("people".into()))
+            State::parse("history"),
+            Err(ParseError::Malformed("history".into()))
         );
         assert_eq!(
-            State::parse("people=known people=unknown"),
-            Err(ParseError::Duplicate("people".into()))
+            State::parse("history=known history=unknown"),
+            Err(ParseError::Duplicate("history".into()))
         );
     }
 
