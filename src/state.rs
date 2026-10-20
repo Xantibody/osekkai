@@ -25,8 +25,12 @@ pub enum Purpose {
     Act,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct State {
+    /// Terms the reader does not know, as the writer listed them for this
+    /// document. Which words those are cannot be enumerated here: a name,
+    /// a product and a figure are all the same question to the reader.
+    pub unknown: Vec<String>,
     pub people: Option<Knowledge>,
     pub system: Option<Knowledge>,
     pub cost: Option<Knowledge>,
@@ -38,7 +42,15 @@ pub struct State {
 pub struct Dimension {
     pub key: &'static str,
     pub label: &'static str,
-    pub values: &'static [Value],
+    pub kind: Kind,
+}
+
+pub enum Kind {
+    /// One of a fixed set of values.
+    Choice(&'static [Value]),
+    /// A comma-separated list the writer fills per document; every list
+    /// carries the same effect.
+    Terms(Value),
 }
 
 /// One value of a dimension with what it changes in the output.
@@ -54,9 +66,19 @@ const UNKNOWN: &str = "unknown";
 
 pub const DIMENSIONS: &[Dimension] = &[
     Dimension {
+        key: "unknown",
+        label: "知らない語",
+        kind: Kind::Terms(Value {
+            key: "<語>,<語>",
+            label: "知らない語",
+            guidance: "宣言した語を本文に出さない。言い換えるか、説明に置き換えるか、消す。名前を残して一言説明を添える語は宣言に入れない",
+            rules: &["no-unknown-term"],
+        }),
+    },
+    Dimension {
         key: "people",
         label: "人物",
-        values: &[
+        kind: Kind::Choice(&[
             Value {
                 key: KNOWN,
                 label: "知っている",
@@ -69,12 +91,12 @@ pub const DIMENSIONS: &[Dimension] = &[
                 guidance: "名前を消し、何が言われたかだけ残す",
                 rules: &["no-person-name"],
             },
-        ],
+        ]),
     },
     Dimension {
         key: "system",
         label: "システム",
-        values: &[
+        kind: Kind::Choice(&[
             Value {
                 key: KNOWN,
                 label: "知っている",
@@ -87,12 +109,12 @@ pub const DIMENSIONS: &[Dimension] = &[
                 guidance: "一言説明を添える。説明しないと通じない細部は丸ごと消す",
                 rules: &[],
             },
-        ],
+        ]),
     },
     Dimension {
         key: "cost",
         label: "費用感",
-        values: &[
+        kind: Kind::Choice(&[
             Value {
                 key: KNOWN,
                 label: "知っている",
@@ -105,12 +127,12 @@ pub const DIMENSIONS: &[Dimension] = &[
                 guidance: "比で書く（今の半分ほど）",
                 rules: &["no-absolute-amount"],
             },
-        ],
+        ]),
     },
     Dimension {
         key: "history",
         label: "経緯",
-        values: &[
+        kind: Kind::Choice(&[
             Value {
                 key: KNOWN,
                 label: "知っている",
@@ -123,12 +145,12 @@ pub const DIMENSIONS: &[Dimension] = &[
                 guidance: "なぜ今この話をしているかを書く",
                 rules: &[],
             },
-        ],
+        ]),
     },
     Dimension {
         key: "purpose",
         label: "目的",
-        values: &[
+        kind: Kind::Choice(&[
             Value {
                 key: "inform",
                 label: "知っておく",
@@ -147,7 +169,7 @@ pub const DIMENSIONS: &[Dimension] = &[
                 guidance: "例題がまだない",
                 rules: &[],
             },
-        ],
+        ]),
     },
 ];
 
@@ -160,6 +182,8 @@ pub enum ParseError {
         dimension: String,
         value: String,
     },
+    /// A term list with nothing in it.
+    NoTerms(String),
     Duplicate(String),
 }
 
@@ -171,6 +195,7 @@ impl fmt::Display for ParseError {
             Self::UnknownValue { dimension, value } => {
                 write!(f, "「{dimension}」に「{value}」という値はない")
             }
+            Self::NoTerms(k) => write!(f, "「{k}」に語がない。コンマ区切りで列挙する"),
             Self::Duplicate(k) => write!(f, "「{k}」が二度宣言されている"),
         }
     }
@@ -189,16 +214,46 @@ fn knowledge(dimension: &str, value: &str) -> Result<Knowledge, ParseError> {
     }
 }
 
+/// `key=value` pairs of a declaration. A token without a key continues the
+/// value before it, so a term such as 「840 万」 may hold a space.
+fn pairs(decl: &str) -> Result<Vec<(&str, String)>, ParseError> {
+    let mut out: Vec<(&str, String)> = Vec::new();
+    for token in decl.split_whitespace() {
+        let key = token
+            .split_once('=')
+            .filter(|(k, _)| !k.is_empty() && k.bytes().all(|b| b.is_ascii_lowercase()));
+        match (key, out.last_mut()) {
+            (Some((k, v)), _) => out.push((k, v.to_owned())),
+            (None, Some((_, v))) => {
+                v.push(' ');
+                v.push_str(token);
+            }
+            (None, None) => return Err(ParseError::Malformed(token.to_owned())),
+        }
+    }
+    Ok(out)
+}
+
+fn terms(dimension: &str, value: &str) -> Result<Vec<String>, ParseError> {
+    let terms: Vec<String> = value
+        .split([',', '、'])
+        .map(str::trim)
+        .filter(|t| !t.is_empty())
+        .map(String::from)
+        .collect();
+    if terms.is_empty() {
+        return Err(ParseError::NoTerms(dimension.to_owned()));
+    }
+    Ok(terms)
+}
+
 impl State {
-    /// Parse `people=unknown cost=known purpose=inform`. Dimensions left out
-    /// stay undeclared and enable nothing.
+    /// Parse `unknown=鈴木,APM history=known purpose=inform`. Dimensions
+    /// left out stay undeclared and enable nothing.
     pub fn parse(decl: &str) -> Result<Self, ParseError> {
         let mut state = Self::default();
-        for pair in decl.split_whitespace() {
-            let Some((key, value)) = pair.split_once('=') else {
-                return Err(ParseError::Malformed(pair.to_owned()));
-            };
-            state.set(key, value)?;
+        for (key, value) in pairs(decl)? {
+            state.set(key, &value)?;
         }
         Ok(state)
     }
@@ -212,6 +267,13 @@ impl State {
             Ok(())
         }
         match key {
+            "unknown" => {
+                if !self.unknown.is_empty() {
+                    return Err(ParseError::Duplicate(key.to_owned()));
+                }
+                self.unknown = terms(key, value)?;
+                Ok(())
+            }
             "people" => put(&mut self.people, key, knowledge(key, value)?),
             "system" => put(&mut self.system, key, knowledge(key, value)?),
             "cost" => put(&mut self.cost, key, knowledge(key, value)?),
@@ -235,18 +297,30 @@ impl State {
     }
 
     /// The declared value of each dimension, in `DIMENSIONS` order.
-    pub fn declared(&self) -> Vec<(&'static Dimension, &'static Value)> {
+    pub fn declared(&self) -> Vec<Declared> {
         DIMENSIONS
             .iter()
-            .filter_map(|d| self.value_key(d.key).map(|k| (d, k)))
-            .map(|(d, k)| {
-                (
-                    d,
-                    d.values
+            .filter_map(|d| match &d.kind {
+                Kind::Terms(value) if d.key == "unknown" && !self.unknown.is_empty() => {
+                    Some(Declared {
+                        dimension: d,
+                        value,
+                        written: self.unknown.join(","),
+                    })
+                }
+                Kind::Terms(_) => None,
+                Kind::Choice(values) => {
+                    let key = self.value_key(d.key)?;
+                    let value = values
                         .iter()
-                        .find(|v| v.key == k)
-                        .expect("declared value is defined"),
-                )
+                        .find(|v| v.key == key)
+                        .expect("declared value is defined");
+                    Some(Declared {
+                        dimension: d,
+                        value,
+                        written: key.to_owned(),
+                    })
+                }
             })
             .collect()
     }
@@ -273,6 +347,14 @@ impl State {
     }
 }
 
+/// One declared dimension: its value's effects, and what the writer wrote
+/// after the `=`.
+pub struct Declared {
+    pub dimension: &'static Dimension,
+    pub value: &'static Value,
+    pub written: String,
+}
+
 impl State {
     /// What the declared values ask of the writer: guidance to follow and
     /// the lint rules they switch on. Printed by `osekkai state show`.
@@ -282,10 +364,19 @@ impl State {
             return "宣言された次元がない。osekkai state list で次元と値を見る\n".to_owned();
         }
         let mut out = String::new();
-        for (d, v) in declared {
+        for Declared {
+            dimension: d,
+            value: v,
+            written,
+        } in declared
+        {
+            let shown = match d.kind {
+                Kind::Choice(_) => v.label.to_owned(),
+                Kind::Terms(_) => written.replace(',', ", "),
+            };
             out.push_str(&format!(
                 "{} = {}（{}={}）\n  {}\n",
-                d.label, v.label, d.key, v.key, v.guidance
+                d.label, shown, d.key, written, v.guidance
             ));
             if !v.rules.is_empty() {
                 out.push_str(&format!("  lint: {}\n", v.rules.join(", ")));
@@ -300,12 +391,15 @@ pub fn list() -> String {
     DIMENSIONS
         .iter()
         .map(|d| {
-            let values: Vec<String> = d
-                .values
-                .iter()
-                .map(|v| format!("{}（{}）", v.key, v.label))
-                .collect();
-            format!("{}（{}）: {}\n", d.key, d.label, values.join(" / "))
+            let values = match d.kind {
+                Kind::Choice(values) => values
+                    .iter()
+                    .map(|v| format!("{}（{}）", v.key, v.label))
+                    .collect::<Vec<_>>()
+                    .join(" / "),
+                Kind::Terms(ref v) => format!("{}（コンマ区切りで列挙）", v.key),
+            };
+            format!("{}（{}）: {}\n", d.key, d.label, values)
         })
         .collect()
 }
@@ -321,14 +415,39 @@ mod tests {
 
     #[test]
     fn parses_each_dimension() {
-        let s =
-            State::parse("people=unknown system=known cost=unknown history=known purpose=decide")
-                .unwrap();
+        let s = State::parse(
+            "unknown=鈴木,APM people=unknown system=known cost=unknown history=known purpose=decide",
+        )
+        .unwrap();
+        assert_eq!(s.unknown, vec!["鈴木", "APM"]);
         assert_eq!(s.people, Some(Knowledge::Unknown));
         assert_eq!(s.system, Some(Knowledge::Known));
         assert_eq!(s.cost, Some(Knowledge::Unknown));
         assert_eq!(s.history, Some(Knowledge::Known));
         assert_eq!(s.purpose, Some(Purpose::Decide));
+    }
+
+    #[test]
+    fn a_term_may_hold_a_space_and_a_japanese_comma() {
+        let s = State::parse("unknown=840 万,Grafana Cloud、鈴木 purpose=inform").unwrap();
+        assert_eq!(s.unknown, vec!["840 万", "Grafana Cloud", "鈴木"]);
+        assert_eq!(s.purpose, Some(Purpose::Inform));
+    }
+
+    #[test]
+    fn rejects_an_empty_term_list() {
+        assert_eq!(
+            State::parse("unknown="),
+            Err(ParseError::NoTerms("unknown".into()))
+        );
+        assert_eq!(
+            State::parse("unknown=, ,"),
+            Err(ParseError::NoTerms("unknown".into()))
+        );
+        assert_eq!(
+            State::parse("unknown=a unknown=b"),
+            Err(ParseError::Duplicate("unknown".into()))
+        );
     }
 
     #[test]
@@ -356,19 +475,39 @@ mod tests {
 
     #[test]
     fn declared_lists_values_with_their_effects() {
-        let s = State::parse("purpose=inform people=unknown").unwrap();
+        let s = State::parse("purpose=inform unknown=鈴木,840 万").unwrap();
         let declared = s.declared();
-        let keys: Vec<_> = declared.iter().map(|(d, v)| (d.key, v.key)).collect();
-        assert_eq!(keys, vec![("people", "unknown"), ("purpose", "inform")]);
-        assert_eq!(declared[0].1.rules, &["no-person-name"]);
+        let keys: Vec<_> = declared
+            .iter()
+            .map(|d| (d.dimension.key, d.written.as_str()))
+            .collect();
+        assert_eq!(
+            keys,
+            vec![("unknown", "鈴木,840 万"), ("purpose", "inform")]
+        );
+        assert_eq!(declared[0].value.rules, &["no-unknown-term"]);
     }
 
     #[test]
-    fn every_dimension_value_parses_back_to_itself() {
+    fn describe_shows_the_terms_as_written() {
+        let s = State::parse("unknown=鈴木,840 万").unwrap();
+        let text = s.describe();
+        assert!(
+            text.starts_with("知らない語 = 鈴木, 840 万（unknown=鈴木,840 万）\n"),
+            "{text}"
+        );
+        assert!(text.contains("lint: no-unknown-term"), "{text}");
+    }
+
+    #[test]
+    fn every_choice_value_parses_back_to_itself() {
         for d in DIMENSIONS {
-            for v in d.values {
+            let Kind::Choice(values) = d.kind else {
+                continue;
+            };
+            for v in values {
                 let s = State::parse(&format!("{}={}", d.key, v.key)).unwrap();
-                assert_eq!(s.declared()[0].1.key, v.key, "{}={}", d.key, v.key);
+                assert_eq!(s.declared()[0].value.key, v.key, "{}={}", d.key, v.key);
             }
         }
     }
