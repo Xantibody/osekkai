@@ -16,14 +16,15 @@
 | `tests/fixtures/<rule>/{ok,ng}/` | ルールごとの fixture。`ng` は `rule@line` を `.expect` に書く |
 | `tests/fixtures/examples/` | 本人が受け入れた架空の例題。sidecar が残っているものは、例を直すかルールを直すかが未決 |
 | `skills/osekkai/` | skill 本文。4 段のアンカーを持つ |
-| `.ai/` | 設計の経緯、plan、例題の原文、まとめた文章の記録。gitignore 下で commit しない |
+| `.ai/` | 設計の経緯、plan、例題の原文。gitignore 下で commit しない |
+| `~/.osekkai/` | skill が書くまとめ 1 件ごとの作業の記録。リポジトリの外 |
 
 ## 守ること
 
 - 新しい lint ルールは、文字と構造だけで判定できるものに限る。意味を読まないと決まらない判断は skill の guidance に書く
 - ステートの次元を足すのは、既存の次元で説明がつかない残す・消すの判断が例題に出て、guidance か rule を 1 つは変えるときだけ。読み手の目録（preset）は作らない
 - 会話の進み具合を記録する状態機械は作らない。成果物に残る順序だけを検証する
-- 実際の仕事の文章はこのリポジトリに置かない。例題は架空のものだけにし、実物は `.ai/osekkai/` に残す
+- 実際の仕事の文章はこのリポジトリに置かない。例題は架空のものだけにし、実物は `~/.osekkai/` の記録に残す
 - ルールは TDD で 1 ルール 1 コミット。fixture を先に書き、`nix develop -c cargo test` が落ちるのを見てから実装する
 
 ## 言語

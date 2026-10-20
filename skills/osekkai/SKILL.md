@@ -26,6 +26,15 @@ decide something, do something). A PR body's reader is the reviewer; a
 report's reader is the user who asked. If the request names no reader,
 ask, or state the assumption in the hand-over.
 
+Then open the record for this job: `~/.osekkai/<YYYY-MM-DD>-<slug>.md`,
+one file per summary, never inside a repository. Write the reader into it
+now and append to it as you work. Everything that follows goes in as it
+happens, failures first: a grouping that did not hold, a term you listed
+and then kept, a lint finding and what you changed for it, a fact the
+source lacked. The record exists so the author can later reread how the
+text came to be and refine these steps; a record that only holds the
+final text teaches nothing.
+
 <!-- osekkai-step: declare-state -->
 
 ## 1. Declare the reader's state
@@ -186,13 +195,28 @@ Where the comment would show — a chat message, an email — delete the
 first line by hand before pasting. State the reader you assumed if the
 request did not name one.
 
-Then keep a local record. Write the declaration, the final text and the
-reader you wrote for to `.ai/osekkai/<YYYY-MM-DD>-<slug>.md` in the
-repository you are working in (`$XDG_DATA_HOME/osekkai/` when there is
-no repository). `.ai/` is gitignored on the author's machine and is
-never committed: the source text may hold things that must not leave the
-machine, and the record exists so the author can later reread what was
-written and refine these steps. The osekkai repository itself only holds
+Then close the record opened in step 0. It ends with the declaration and
+the delivered text, after the log of what was tried:
+
+```markdown
+# <slug>
+
+- reader: <who, and what they will do with the text>
+- source: <what the text was made from>
+
+## Log
+
+- <one bullet per attempt, failure or change, in the order it happened>
+
+## Delivered
+
+<!-- osekkai: ... -->
+
+<the text as handed over>
+```
+
+The record stays on the author's machine: the source may hold things that
+must not leave it, which is also why the osekkai repository holds only
 fictional examples.
 
 ## Worked examples
