@@ -3,7 +3,7 @@
 文章のまとめ方を Claude Code（と codex）に持たせるための skill と、その行動を支えるガードレールの lint。
 
 - `osekkai` は Rust の単体バイナリで、Markdown の箇条の構造と読み手のステートを lint し、守るべき手順を印字する
-- `skills/osekkai/SKILL.md` は文章をまとめる手順の skill。4 段のアンカーを持ち、`nix flake check` が順序を確かめる
+- `skills/osekkai/SKILL.md` は文章をまとめる手順の skill。4 段のアンカーを持ち、`nix flake check` が順序を確かめる。nix package は同じ skill を `share/osekkai/skills/osekkai` にも入れるので、home-manager はそこを `~/.claude/skills` に指せばバイナリと skill の版が揃う
 
 設計の経緯は `.ai/`（gitignore 下）にある。
 
