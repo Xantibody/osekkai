@@ -17,6 +17,7 @@ mod no_list_item_colon;
 mod no_list_item_separator;
 mod no_person_name;
 mod no_sentence_chain_in_list_item;
+mod no_unknown_term;
 mod postscript_last;
 mod require_heading;
 mod state_first;
@@ -47,6 +48,7 @@ const STRUCTURAL: &[Rule] = &[
 type StateRule = fn(&Document, &State, &mut Vec<Finding>);
 
 const STATEFUL: &[StateRule] = &[
+    no_unknown_term::check,
     no_person_name::check,
     no_absolute_amount::check,
     no_heading::check,
