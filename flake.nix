@@ -22,6 +22,13 @@
           version = "0.1.0";
           src = ./.;
           cargoLock.lockFile = ./Cargo.lock;
+          # The skill ships in the same derivation as the binary, so a consumer
+          # that points its skills dir at $out/share/osekkai/skills always
+          # gets the skill that matches the binary it runs.
+          postInstall = ''
+            mkdir -p $out/share/osekkai
+            cp -r ${./skills} $out/share/osekkai/skills
+          '';
           meta.mainProgram = "osekkai";
         };
         default = osekkai;
