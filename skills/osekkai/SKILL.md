@@ -186,6 +186,15 @@ Where the comment would show — a chat message, an email — delete the
 first line by hand before pasting. State the reader you assumed if the
 request did not name one.
 
+Then keep a local record. Write the declaration, the final text and the
+reader you wrote for to `.ai/osekkai/<YYYY-MM-DD>-<slug>.md` in the
+repository you are working in (`$XDG_DATA_HOME/osekkai/` when there is
+no repository). `.ai/` is gitignored on the author's machine and is
+never committed: the source text may hold things that must not leave the
+machine, and the record exists so the author can later reread what was
+written and refine these steps. The osekkai repository itself only holds
+fictional examples.
+
 ## Worked examples
 
 `tests/fixtures/examples/` in the osekkai repository holds the author's
