@@ -1,4 +1,4 @@
-<!-- osekkai: people=unknown system=unknown cost=unknown history=unknown purpose=inform -->
+<!-- osekkai: unknown=鈴木,佐藤,山本,APM,PagerDuty,Grafana OnCall,310 万,430 万,450 万 history=unknown purpose=inform -->
 
 # 監視サービスの乗り換え検討
 

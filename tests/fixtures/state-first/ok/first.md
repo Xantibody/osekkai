@@ -1,4 +1,4 @@
-<!-- osekkai: people=known system=known purpose=inform -->
+<!-- osekkai: history=known purpose=inform -->
 
 # 監視サービスの乗り換え検討
 

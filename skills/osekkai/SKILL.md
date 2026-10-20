@@ -30,33 +30,53 @@ ask, or state the assumption in the hand-over.
 
 ## 1. Declare the reader's state
 
-The state has five dimensions. Four say what the reader already knows,
-each `known` or `unknown`; the fifth says what they will do.
+The state has three dimensions: the terms the reader does not know,
+whether they know the history, and what they will do with the text.
 
 | key | question |
 | --- | --- |
-| `people` | Do they know the people named in the source? |
-| `system` | Do they know the systems and tools by name? |
-| `cost` | Do they have a sense of the amounts involved? |
-| `history` | Do they know why this topic is up now? |
+| `unknown` | Which terms in the source would mean nothing to them? A comma-separated list |
+| `history` | Do they know why this topic is up now? `known` or `unknown` |
 | `purpose` | `inform`, `decide` or `act` |
+
+The `unknown` list is decided per document, by you, for this reader. Go
+through the source once with these questions and write down every term
+that fails:
+
+- **People.** Would the reader know who 鈴木 is? If not, the name goes on
+  the list and only what was said stays.
+- **Systems, tools, products.** Would the name alone mean something to
+  them? A name that carries the point gets a one-line gloss and stays off
+  the list; a name whose details they could not follow goes on the list,
+  and its details go with it.
+- **Amounts.** Do they have a feel for the budget? If not, each figure
+  goes on the list and is written as a ratio (「今の半分ほど」).
+- **Jargon.** Any abbreviation or in-house word they would have to look
+  up.
+
+A listed term must not appear in the text; the lint checks that. The
+author lists fewer terms than an AI does. In the worked example the
+outsider version keeps `Datadog`, `Grafana Cloud` and `840 万`: the names
+are explained by the gloss on 「監視サービス」, and the current figure is
+what the ratio is measured against. When in doubt, keep the term a gloss
+already explains and list the ones that would need a gloss of their own.
 
 Write the declaration as the first block of the document, then read the
 guidance for it:
 
 ```markdown
-<!-- osekkai: people=unknown system=unknown cost=unknown history=unknown purpose=inform -->
+<!-- osekkai: unknown=鈴木,佐藤,APM,310 万,450 万 history=unknown purpose=inform -->
 ```
 
 ```sh
-osekkai state show people=unknown system=unknown cost=unknown history=unknown purpose=inform
+osekkai state show unknown=鈴木,佐藤,APM,310 万,450 万 history=unknown purpose=inform
 ```
 
 `state show` prints, per value, what to keep and what to cut, and which
 lint rules it turns on. `osekkai state list` prints the whole vocabulary.
-Declare only the dimensions the source touches; a text with no amounts
-needs no `cost`. The declaration is an HTML comment, so GitHub does not
-render it and a PR body can keep it.
+Declare only what the source touches; a text whose every term the reader
+knows needs no `unknown`. The declaration is an HTML comment, so GitHub
+does not render it and a PR body can keep it.
 
 <!-- osekkai-step: draft -->
 
@@ -85,14 +105,14 @@ The author's own order:
    source gives no recommendation, write none of your own.
 6. **Apply the reader's state.** For each fact, keep, cut, or add a
    one-line gloss, following the `state show` guidance:
-   - `people=unknown`: drop names, keep what was said. `known`: names
-     alone suffice, and when opinions split, keep who said what so the
-     reader knows whom to ask.
-   - `system=unknown`: gloss the main system in a phrase (「監視サービスは、
-     システムの状態を記録して障害を知らせるもの」); details that would need a
-     gloss of their own are cut whole.
-   - `cost=unknown`: write ratios (「今の半分ほど」). `known`: list the
-     amounts per option and omit the current figure.
+   - `unknown=…`: a listed name is dropped and what was said stays; a
+     listed figure becomes a ratio; a listed product or word is reworded,
+     or cut with the detail that needed it. A name kept off the list gets
+     its gloss once, as a child bullet (「監視サービスは、システムの状態を記録
+     して障害を知らせるもの」).
+   - No `unknown`: names alone suffice, and when opinions split, keep who
+     said what so the reader knows whom to ask. List the amounts per
+     option and omit the current figure.
    - `history=unknown`: say why this is being discussed now. `known`:
      conclusion and delta only.
    - `purpose=inform`: a few bullets on what is happening, no headings,
@@ -148,8 +168,7 @@ each:
 | `max-list-block-items`, `max-top-items` | Merge siblings that share an axis, or lift a group into a section |
 | `max-section-lines` | Split the section, or cut what the reader's state says to cut |
 | `postscript-last` | Move the 「蛇足だが」 paragraph after the last list, outside any bullet |
-| `no-person-name` | Drop the name, keep the statement |
-| `no-absolute-amount` | Replace the figure with a ratio to the current one |
+| `no-unknown-term` | The listed term is still in the text: drop the name, write the figure as a ratio, reword or cut the word |
 | `no-heading` | Flatten to a single list; the reader only needs to know |
 | `decision-first` | Put the request and its deadline in the first bullet |
 | `require-heading` | Add `## 案` and `## 未確定` and sort the items into them |

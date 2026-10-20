@@ -14,7 +14,7 @@ osekkai lint <file>...              # file:line:col: rule-id: message。指摘�
 osekkai lint --format json <file>   # textlint と同じ ruleId キーの JSON
 osekkai lint --require-state <file> # 読み手のステートが宣言されていなければ指摘する
 osekkai state list                  # ステートの次元と値
-osekkai state show people=unknown purpose=inform   # そのステートの guidance と有効になる lint
+osekkai state show unknown=鈴木,APM purpose=inform  # そのステートの guidance と有効になる lint
 osekkai steps                       # 守るべき 4 段
 osekkai steps --check SKILL.md      # skill 本文のアンカーが 4 段の順で並んでいるか
 ```
@@ -24,10 +24,10 @@ osekkai steps --check SKILL.md      # skill 本文のアンカーが 4 段の順
 本文の最初のブロックに HTML コメントで宣言する。GitHub は描画しないので PR 本文に残せる。
 
 ```markdown
-<!-- osekkai: people=unknown system=unknown cost=unknown history=unknown purpose=inform -->
+<!-- osekkai: unknown=鈴木,APM,840 万 history=unknown purpose=inform -->
 ```
 
-次元と値はバイナリの enum が持つ。読み手の目録は作らず、文書ごとに値の組み合わせで宣言する。各値は意味を読む判断の guidance と、文字と構造で判定できる lint ルールの 2 つを持ち、`state show` が両方を印字する。
+次元はバイナリが持つ。`unknown` は読み手が知らない語の列挙で、何がその語かは文書ごとに書き手が決める。人名、製品名、金額はどれもその例でしかないので、種類ごとの次元は持たない。`history` と `purpose` は enum の値。読み手の目録は作らず、文書ごとに値の組み合わせで宣言する。各値は意味を読む判断の guidance と、文字と構造で判定できる lint ルールの 2 つを持ち、`state show` が両方を印字する。
 
 ## lint ルール
 
@@ -48,8 +48,7 @@ osekkai steps --check SKILL.md      # skill 本文のアンカーが 4 段の順
 
 | ID | 有効になる条件 | 見るもの |
 | --- | --- | --- |
-| `no-person-name` | 人物を知らない | 「〜さん」「〜氏」が残っていないか |
-| `no-absolute-amount` | 費用感を知らない | 金額が残っていないか |
+| `no-unknown-term` | 知らない語を宣言 | 宣言した語が本文に残っていないか |
 | `no-heading` | 知っておく | 題名以外の見出しがないか |
 | `max-top-items` | 知っておく | 最上位の項目が 4 つまでか |
 | `decision-first` | 判断する | 先頭に期限と依頼があるか |
