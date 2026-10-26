@@ -26,6 +26,12 @@ decide something, do something). A PR body's reader is the reviewer; a
 report's reader is the user who asked. If the request names no reader,
 ask, or state the assumption in the hand-over.
 
+When the reader is the user and you are about to guess what they know —
+「わからないからまとめて」 does not say whether they know the game's
+terms or only this article — ask that one question before drafting. In
+the author's record a guessed `unknown` list cost two rounds that one
+question would have saved.
+
 Then open the record for this job: `~/.osekkai/<YYYY-MM-DD>-<slug>.md`,
 one file per summary, never inside a repository. Write the reader into it
 now and append to it as you work. Everything that follows goes in as it
