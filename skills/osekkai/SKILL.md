@@ -26,6 +26,12 @@ decide something, do something). A PR body's reader is the reviewer; a
 report's reader is the user who asked. If the request names no reader,
 ask, or state the assumption in the hand-over.
 
+When the reader is the user and you are about to guess what they know —
+「わからないからまとめて」 does not say whether they know the game's
+terms or only this article — ask that one question before drafting. In
+the author's record a guessed `unknown` list cost two rounds that one
+question would have saved.
+
 Then open the record for this job: `~/.osekkai/<YYYY-MM-DD>-<slug>.md`,
 one file per summary, never inside a repository. Write the reader into it
 now and append to it as you work. Everything that follows goes in as it
@@ -125,15 +131,30 @@ The author's own order:
    - `history=unknown`: say why this is being discussed now. `known`:
      conclusion and delta only.
    - `purpose=inform`: a few bullets on what is happening, no headings,
-     and no decision material. `purpose=decide`: the request and its
-     deadline first, then `## 案` and `## 未確定`. `purpose=act` has no
-     worked example yet; ask the user what the reader needs to do.
+     and no decision material. It fits a reader who wants to know that
+     something is going on, not one who wants the content itself; a
+     reader who asked 「わからないからまとめて」 wants the content, so
+     leave `purpose` undeclared and keep the sections. `purpose=decide`:
+     the request and its deadline first, then `## 案` and `## 未確定`.
+   - `purpose=act`: the reader works with the text open. Separate the
+     usual flow from the exceptions (`## 通常の流れ` with numbered `###`,
+     then `## 例外` with one `###` per situation), and separate a check
+     done every time from one done only when something looks wrong — a
+     table in the source is not proof that it is consulted each time.
+     The source's step count is not the flow's step count; confirm the
+     order with the source's author before compressing it. In the
+     author's record a seven-step draft went five rounds because each of
+     these was assumed instead of asked.
 7. **Move asides out.** Anything true but off the main line goes after
    the list, as a paragraph starting 「蛇足だが」. Only one, only last.
 8. **Review the whole.** Reread as the reader. Is anything missing that
    they need? Did a fact the source itself lacks (an unstated
    assumption in an estimate) make it in as an open item? Does the title
-   still fit?
+   still fit? Do this again after every round of feedback, not only on
+   the first draft: a fix made at the pointed-out line changes what the
+   other sections mean. In the author's record two rounds of local fixes
+   left a role table that the new flow no longer used, and the third
+   round was 「矛盾しているので読み直せ」.
 
 ### Sentence shape
 
@@ -147,6 +168,23 @@ The author's own order:
 - No colon inside a bullet (`- 調査結果: キャッシュは問題なし`), no second
   sentence inside a bullet (`- A。B。`), no ` — ` or `**label**:` joining a
   head to a body. The head becomes the bullet, the body its children.
+
+### Diagrams
+
+When the point is a flow with branches, or how three or more parts
+connect, bullets alone make the reader rebuild the picture in their head.
+Draw it once as a `mermaid` block (`flowchart` for a flow, `sequenceDiagram`
+for who sends what to whom) and keep the bullets, since a chat message
+or an email will not render it. Rules:
+
+- Node labels use the bullets' words — one word per thing applies here
+  too.
+- One diagram per document, placed in its own `##` section (`## 流れ`)
+  or right under the title, so its lines do not eat the twelve a section
+  gets for bullets; the lint counts a code block's lines like any other.
+- A diagram the reader can draw from the bullets is not needed; the
+  author's PR skill draws one only when a change rewires three or more
+  parts, and the same bar holds here.
 
 ### Density
 
@@ -214,6 +252,31 @@ the delivered text, after the log of what was tried:
 
 <the text as handed over>
 ```
+
+When the text comes back with feedback, the record grows by one round
+per return, in this shape, so that rereading it later shows what was
+said and what changed for it:
+
+```markdown
+## Round 2
+
+- feedback: <what the reader said, as close to their words as possible>
+- learned: <the general mistake behind it, if there is one>
+
+### Log
+
+- <what changed, in the order it happened>
+
+### Delivered
+
+<the text as handed over, in full>
+```
+
+The author's records held this three different ways (a blank line, a
+`## Log (2nd round)`, a `###` per reader) and some rounds lost the
+reader's words; the shape above is what they settled on. A summary
+written for several readers at once is not a round: it is one `###` per
+reader under `## Delivered`.
 
 The record stays on the author's machine: the source may hold things that
 must not leave it, which is also why the osekkai repository holds only
