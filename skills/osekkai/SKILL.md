@@ -131,9 +131,20 @@ The author's own order:
    - `history=unknown`: say why this is being discussed now. `known`:
      conclusion and delta only.
    - `purpose=inform`: a few bullets on what is happening, no headings,
-     and no decision material. `purpose=decide`: the request and its
-     deadline first, then `## 案` and `## 未確定`. `purpose=act` has no
-     worked example yet; ask the user what the reader needs to do.
+     and no decision material. It fits a reader who wants to know that
+     something is going on, not one who wants the content itself; a
+     reader who asked 「わからないからまとめて」 wants the content, so
+     leave `purpose` undeclared and keep the sections. `purpose=decide`:
+     the request and its deadline first, then `## 案` and `## 未確定`.
+   - `purpose=act`: the reader works with the text open. Separate the
+     usual flow from the exceptions (`## 通常の流れ` with numbered `###`,
+     then `## 例外` with one `###` per situation), and separate a check
+     done every time from one done only when something looks wrong — a
+     table in the source is not proof that it is consulted each time.
+     The source's step count is not the flow's step count; confirm the
+     order with the source's author before compressing it. In the
+     author's record a seven-step draft went five rounds because each of
+     these was assumed instead of asked.
 7. **Move asides out.** Anything true but off the main line goes after
    the list, as a paragraph starting 「蛇足だが」. Only one, only last.
 8. **Review the whole.** Reread as the reader. Is anything missing that
