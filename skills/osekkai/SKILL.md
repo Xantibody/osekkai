@@ -150,7 +150,11 @@ The author's own order:
 8. **Review the whole.** Reread as the reader. Is anything missing that
    they need? Did a fact the source itself lacks (an unstated
    assumption in an estimate) make it in as an open item? Does the title
-   still fit?
+   still fit? Do this again after every round of feedback, not only on
+   the first draft: a fix made at the pointed-out line changes what the
+   other sections mean. In the author's record two rounds of local fixes
+   left a role table that the new flow no longer used, and the third
+   round was 「矛盾しているので読み直せ」.
 
 ### Sentence shape
 
