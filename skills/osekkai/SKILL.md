@@ -169,6 +169,23 @@ The author's own order:
   sentence inside a bullet (`- A。B。`), no ` — ` or `**label**:` joining a
   head to a body. The head becomes the bullet, the body its children.
 
+### Diagrams
+
+When the point is a flow with branches, or how three or more parts
+connect, bullets alone make the reader rebuild the picture in their head.
+Draw it once as a `mermaid` block (`flowchart` for a flow, `sequenceDiagram`
+for who sends what to whom) and keep the bullets, since a chat message
+or an email will not render it. Rules:
+
+- Node labels use the bullets' words — one word per thing applies here
+  too.
+- One diagram per document, placed in its own `##` section (`## 流れ`)
+  or right under the title, so its lines do not eat the twelve a section
+  gets for bullets; the lint counts a code block's lines like any other.
+- A diagram the reader can draw from the bullets is not needed; the
+  author's PR skill draws one only when a change rewires three or more
+  parts, and the same bar holds here.
+
 ### Density
 
 The author's limit is what a reader takes in at a glance: about three
