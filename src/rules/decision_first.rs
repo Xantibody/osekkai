@@ -12,8 +12,10 @@ use crate::state::{Purpose, State};
 
 pub const ID: &str = "decision-first";
 
-static DEADLINE: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"までに|月|日").expect("valid regex"));
+// A bare 月 or 日 matched 毎月 and 今日, so a date needs a number in front of it.
+static DEADLINE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"までに|前に|期限なし|[0-9０-９]+ ?[月日]|[上中下]旬|月末").expect("valid regex")
+});
 static REQUEST: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"ほしい|決め|ください").expect("valid regex"));
 
