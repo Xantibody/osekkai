@@ -253,6 +253,31 @@ the delivered text, after the log of what was tried:
 <the text as handed over>
 ```
 
+When the text comes back with feedback, the record grows by one round
+per return, in this shape, so that rereading it later shows what was
+said and what changed for it:
+
+```markdown
+## Round 2
+
+- feedback: <what the reader said, as close to their words as possible>
+- learned: <the general mistake behind it, if there is one>
+
+### Log
+
+- <what changed, in the order it happened>
+
+### Delivered
+
+<the text as handed over, in full>
+```
+
+The author's records held this three different ways (a blank line, a
+`## Log (2nd round)`, a `###` per reader) and some rounds lost the
+reader's words; the shape above is what they settled on. A summary
+written for several readers at once is not a round: it is one `###` per
+reader under `## Delivered`.
+
 The record stays on the author's machine: the source may hold things that
 must not leave it, which is also why the osekkai repository holds only
 fictional examples.
