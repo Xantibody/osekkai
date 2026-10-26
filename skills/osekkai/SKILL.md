@@ -179,7 +179,7 @@ each:
 | `postscript-last` | Move the 「蛇足だが」 paragraph after the last list, outside any bullet |
 | `no-unknown-term` | The listed term is still in the text: drop the name, write the figure as a ratio, reword or cut the word |
 | `no-heading` | Flatten to a single list; the reader only needs to know |
-| `decision-first` | Put the request and its deadline in the first bullet |
+| `decision-first` | Put the request and its deadline in the first bullet; a request with no deadline says 「期限なし」 rather than inventing one |
 | `require-heading` | Add `## 案` and `## 未確定` and sort the items into them |
 
 Japanese wording (ですます, 漢字の開き, spacing) is textlint's job, via
