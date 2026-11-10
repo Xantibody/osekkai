@@ -1,7 +1,7 @@
 ---
 name: osekkai
-description: The author's way of turning a source text — a chat log, an investigation, a meeting — into a short Markdown summary for a named reader. Declare who the reader is, draft under that reader's state, make `osekkai lint` pass, hand over. Other skills (explain, pull-request, issue) load it as the base for any prose a human reads.
-when_to_use: 文章をまとめる、要約する、報告にする、別の読み手向けに書き直すとき — 「まとめて」「要約して」「報告書にして」「〇〇向けに書き直して」「調査メモにして」「議論を整理して」。PR 本文や作業報告など、explain skill が読み込むときも。
+description: The author's way of turning a source text — a chat log, an investigation, a meeting, a diff — into a short Markdown summary for a named reader. Every piece of prose a human reads goes through it, PR and issue bodies and end-of-task reports included. Declare who the reader is, draft under that reader's state, make `osekkai lint` pass, hand over.
+when_to_use: 文章をまとめる、要約する、報告にする、別の読み手向けに書き直すとき — 「まとめて」「要約して」「報告書にして」「〇〇向けに書き直して」「調査メモにして」「議論を整理して」。PR 本文、issue 本文、作業の終わりの報告を書くときも。
 ---
 
 # osekkai
@@ -269,6 +269,17 @@ hides HTML comments (GitHub PR and issue bodies, most Markdown renderers).
 Where the comment would show — a chat message, an email — delete the
 first line by hand before pasting. State the reader you assumed if the
 request did not name one.
+
+A report given to the user in the terminal ends with the URL of every
+remote thing the work touched — a PR, an issue, a CI run, a release —
+so they open it without looking for it:
+
+- bare and alone on its line; the terminal makes `https://` clickable,
+  and `[text](url)` or a URL inside a sentence is not
+- last, before any question the report goes on to ask
+- one line per thing; a PR and the issue filed from it are two lines
+- a thing not live yet (a tag not pushed) gets its future URL and
+  「push 後に有効」
 
 Then close the record opened in step 0. It ends with the declaration and
 the delivered text, after the log of what was tried:
