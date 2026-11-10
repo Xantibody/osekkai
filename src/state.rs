@@ -105,7 +105,7 @@ pub const DIMENSIONS: &[Dimension] = &[
                 key: "inform",
                 label: "知っておく",
                 guidance: "何が起きているかを数項目。章なし。判断の材料は消す",
-                rules: &["no-heading", "max-top-items"],
+                rules: &["no-heading"],
             },
             Value {
                 key: "decide",

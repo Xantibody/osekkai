@@ -190,8 +190,8 @@ or an email will not render it. Rules:
 
 The author's limit is what a reader takes in at a glance: about three
 rendered lines per bullet, about twelve per section, five items under one
-parent with fewer at each deeper level, and four top-level items when the
-purpose is `inform`. The exact thresholds live in the binary; the lint
+parent with fewer at each deeper level, and four top-level items per
+section. The exact thresholds live in the binary; the lint
 reports them. When it fires, the fix is to merge siblings, lift a level
 up, or cut a section — never to shorten words until the count passes.
 
@@ -212,7 +212,7 @@ each:
 | `no-list-item-colon`, `no-list-item-separator` | The head becomes the bullet, what followed the colon becomes child bullets or one sentence |
 | `no-sentence-chain-in-list-item` | Split at the 「。」, the second paragraph, or the 「、なので」-style joint into sibling or child bullets, or rewrite as one point. Swapping 「。」 for 「、」 is the same chain |
 | `max-list-item-lines` | The bullet holds two points; split it, or move detail to a child |
-| `max-list-block-items`, `max-top-items` | Merge siblings that share an axis, or lift a group into a section |
+| `max-list-block-items`, `max-top-items` | Group siblings that share an axis under a parent that names the group, or lift a group into a section |
 | `max-section-lines` | Split the section, or cut what the reader's state says to cut |
 | `postscript-last` | Move the 「蛇足だが」 paragraph after the last list, outside any bullet |
 | `require-diagram-caption` | Put one or two sentences right before or after the diagram on how to read it: what a box and an arrow stand for, what a colour marks |

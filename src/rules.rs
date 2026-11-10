@@ -39,6 +39,7 @@ const STRUCTURAL: &[Rule] = &[
     max_list_item_lines::check,
     max_list_block_items::check,
     max_section_lines::check,
+    max_top_items::check,
     postscript_last::check,
     require_diagram_caption::check,
 ];
@@ -50,7 +51,6 @@ type StateRule = fn(&Document, &State, &mut Vec<Finding>);
 const STATEFUL: &[StateRule] = &[
     no_unknown_term::check,
     no_heading::check,
-    max_top_items::check,
     decision_first::check,
     require_heading::check,
 ];
