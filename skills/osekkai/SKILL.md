@@ -190,17 +190,35 @@ The author's own order:
 
 ### Diagrams
 
-When the point is a flow with branches, or how three or more parts
-connect, bullets alone make the reader rebuild the picture in their head.
-Draw it once as a `mermaid` block (`flowchart` for a flow, `sequenceDiagram`
-for who sends what to whom) and keep the bullets, since a chat message
-or an email will not render it. Rules:
+When the point is a flow with branches, how three or more parts connect,
+or anything that is hard to put in sentences, bullets alone make the
+reader rebuild the picture in their head. Draw it as a `mermaid` block
+and write one or two sentences right before or after it on how to read
+it (the lint checks the sentences are there). The bullets around it
+carry what the picture does not show; do not repeat the diagram as
+bullets. Where mermaid does not render (a chat message, an email), write
+the bullets instead of the diagram.
 
-- Node labels use the bullets' words — one word per thing applies here
-  too.
-- One diagram per document, placed in its own `##` section (`## 流れ`)
-  or right under the title. The lint does not count a code block's or an
-  image's lines toward a section.
+Decide first what the picture has to answer, then draw one diagram per
+question. Explaining a mechanism and where it is slow is two questions,
+so two diagrams: the parts and how they connect, then the time each step
+takes. Rules, each from a round the author sent back:
+
+- **Order follows reality.** Steps that run one after another are drawn
+  in series; arrows fanning into one box read as running at once. A time
+  breakdown is serial, so it is a `gantt` whose bar lengths are the
+  times, not a `flowchart` with times in the labels.
+- **Boxes are parts at the grain of 「UI」「バックエンド」「DB コンテナ」.**
+  Name the part, not its state or a description of it (「依存の入った
+  環境」 was sent back as over-explained). Use the bullets' words for
+  them, and draw only parts the source names.
+- **One kind of information, one place.** If times sit on the arrows,
+  every time sits on an arrow; a structure diagram carries no times at
+  all. Mixing the two made the author ask why some minutes were on
+  arrows and some in boxes.
+- **Placement.** Each diagram goes in its own `##` section (`## 仕組み`,
+  `## ボトルネック`) or right under the title. The lint does not count a
+  code block's or an image's lines toward a section.
 - A diagram the reader can draw from the bullets is not needed; the
   author's PR skill draws one only when a change rewires three or more
   parts, and the same bar holds here.
