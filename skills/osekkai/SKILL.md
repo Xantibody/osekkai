@@ -41,6 +41,12 @@ source lacked. The record exists so the author can later reread how the
 text came to be and refine these steps; a record that only holds the
 final text teaches nothing.
 
+One record per document, also when a session writes ten PR bodies in a
+row; in the author's history one such session left none. When the
+writing goes to a subagent, its brief names this skill and the record's
+path. Briefs that said only 「pull-request と explain を読め」 left eight
+of thirteen subagents without osekkai and without a record.
+
 <!-- osekkai-step: declare-state -->
 
 ## 1. Declare the reader's state
@@ -90,8 +96,12 @@ osekkai state show unknown=鈴木,佐藤,APM,310 万,450 万 history=unknown pur
 `state show` prints, per value, what to keep and what to cut, and which
 lint rules it turns on. `osekkai state list` prints the whole vocabulary.
 Declare only what the source touches; a text whose every term the reader
-knows needs no `unknown`. The declaration is an HTML comment, so GitHub
-does not render it and a PR body can keep it.
+knows needs no `unknown`. The declaration itself is never dropped:
+`history` always has an answer, so `<!-- osekkai: history=known -->` is
+the least a document carries. Five of the author's nine records handed
+over a PR body with no declaration at all, which leaves no trace that
+this step ran. The declaration is an HTML comment, so GitHub does not
+render it and a PR body can keep it.
 
 <!-- osekkai-step: draft -->
 
@@ -162,7 +172,9 @@ The author's own order:
 9. **Review the whole.** Reread as the reader. Is anything missing that
    they need? Did a fact the source itself lacks (an unstated
    assumption in an estimate) make it in as an open item? Does the title
-   still fit? Do this again after every round of feedback, not only on
+   still fit? Does every claim match the source? 「Rust と画面の両方の
+   テストで確かめた」 went out in a PR body when only the Rust tests
+   existed, and nothing but a later review caught it. Do this again after every round of feedback, not only on
    the first draft: a fix made at the pointed-out line changes what the
    other sections mean. In the author's record two rounds of local fixes
    left a role table that the new flow no longer used, and the third
@@ -282,7 +294,9 @@ so they open it without looking for it:
   「push 後に有効」
 
 Then close the record opened in step 0. It ends with the declaration and
-the delivered text, after the log of what was tried:
+the delivered text in full — not 「PR 本文を参照」 or a path to a draft
+file, since a PR body gets edited and a draft gets deleted — after the
+log of what was tried:
 
 ```markdown
 # <slug>
