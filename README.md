@@ -20,7 +20,7 @@ flowchart TD
   declare --> draft
   subgraph draft ["下書き"]
     direction TB
-    title["主題を仮に置く"] --> frame["骨組みを決める<br/>多ければ章、少なければ箇条"]
+    title["主題を仮に置く"] --> frame["骨組みを決める<br/>大項目と中項目の 2 層"]
     frame --> fill["中身を入れ、広がらなければ畳む"]
     fill --> state["ステートに照らして残す・消す・説明を添える"]
     state --> aside["本筋から外れたものは最後の補足の節に"]
