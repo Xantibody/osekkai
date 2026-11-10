@@ -106,19 +106,29 @@ The author's own order:
 2. **Choose the middle structure.** Much material becomes `##` sections;
    little becomes a bulleted list. When unsure, start wide (概要 / 詳細)
    and fill it in.
-3. **Fold what did not grow.** If a section holds one or two bullets,
-   collapse the sections into one list. The author's example went from
-   two headings to a single nested list.
-4. **Walk between concrete and abstract.** The first grouping is by
+3. **Build two layers.** The author cannot follow a text that has no
+   layer of major items over the concrete ones. Put at least one
+   abstract layer first — `##` headings, parent bullets, or a diagram —
+   and the concrete facts (file names, figures, commands) beneath it.
+   Reading only the upper layer should give the whole picture. Of three
+   shapes tried on one memo, the author picked headings with nested
+   bullets; the same content as flat top-level bullets was 「省略しすぎ」.
+   The lint caps top-level items per section, which forces the grouping
+   but cannot tell whether the group names are abstract; that is yours.
+4. **Fold what did not grow.** If a section holds one or two bullets,
+   collapse the sections into one list, keeping the two layers as parent
+   and child bullets. The author's example went from two headings to a
+   single nested list.
+5. **Walk between concrete and abstract.** The first grouping is by
    whatever you noticed first and is allowed to be wrong; move items when
    the review shows a better axis. Do not expect to get it right once.
-5. **Do not promote a weak cause to the conclusion.** The source may say
+6. **Do not promote a weak cause to the conclusion.** The source may say
    X caused Y; check that the timing and the facts fit before leading
    with it. In the author's example the source blamed a container
    restart for a slowdown that started last week, but the restart was
    older than that, so it stayed a finding, not the conclusion. If the
    source gives no recommendation, write none of your own.
-6. **Apply the reader's state.** For each fact, keep, cut, or add a
+7. **Apply the reader's state.** For each fact, keep, cut, or add a
    one-line gloss, following the `state show` guidance:
    - `unknown=…`: a listed name is dropped and what was said stays; a
      listed figure becomes a ratio; a listed product or word is reworded,
@@ -145,11 +155,11 @@ The author's own order:
      order with the source's author before compressing it. In the
      author's record a seven-step draft went five rounds because each of
      these was assumed instead of asked.
-7. **Move asides out.** Anything true but off the main line goes into
+8. **Move asides out.** Anything true but off the main line goes into
    one last section of its own (`## 補足`, or whatever name fits this
    document). The author found the fixed 「蛇足だが」 opener awkward; the
    position says it is an aside, not a set phrase.
-8. **Review the whole.** Reread as the reader. Is anything missing that
+9. **Review the whole.** Reread as the reader. Is anything missing that
    they need? Did a fact the source itself lacks (an unstated
    assumption in an estimate) make it in as an open item? Does the title
    still fit? Do this again after every round of feedback, not only on
@@ -168,8 +178,15 @@ The author's own order:
 - When the same explanation appears twice, merge the two places or split
   them so each says it once.
 - No colon inside a bullet (`- 調査結果: キャッシュは問題なし`), no second
-  sentence inside a bullet (`- A。B。`), no ` — ` or `**label**:` joining a
-  head to a body. The head becomes the bullet, the body its children.
+  sentence inside a bullet (`- A。B。`, `- A、なので B`, or a second
+  paragraph under it), no ` — ` or `**label**:` joining a head to a body.
+  The head becomes the bullet, the body its children.
+- Prose outside the bullets may go anywhere: a lead stating the premise
+  or the purpose, a sentence between two lists, the reading of a diagram.
+  When the point is hard to put in sentences, draw it instead.
+- One sentence per line. Break the line after every 「。」 in prose, so
+  each sentence reads on its own; GitHub PR and issue bodies render the
+  break as it is written.
 
 ### Diagrams
 
