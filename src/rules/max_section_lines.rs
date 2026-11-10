@@ -2,11 +2,23 @@
 //! directly under a heading, up to the next heading of any depth, so a title
 //! is not charged for the chapters beneath it; the blocks before the first
 //! heading form a section too.
+//!
+//! Code blocks and images are not counted. A diagram or a screenshot is taken
+//! in at a glance however many source lines it spans, and counting them made
+//! writers drop nodes and sentences until the number passed.
+
+use std::sync::LazyLock;
 
 use markdown::mdast::Node;
+use regex::Regex;
 
 use super::Finding;
 use crate::doc::{rendered_lines, start, Document};
+
+/// `![alt](url)`, `![alt][ref]` and `<img ...>`.
+static IMAGE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"!\[[^\]]*\](?:\([^)]*\)|\[[^\]]*\])|<img\b[^>]*>").expect("valid regex")
+});
 
 pub const ID: &str = "max-section-lines";
 // AIDEV-NOTE: 12 is four three-line bullets, a guess until an example shows
@@ -27,7 +39,7 @@ pub fn check(doc: &Document, out: &mut Vec<Finding>) {
         }
         let lines: usize = blocks[body_start..end]
             .iter()
-            .map(|b| rendered_lines(doc.source_of(b)))
+            .map(|b| counted_lines(doc, b))
             .sum();
         if lines > MAX_LINES {
             let (line, column) = start(head);
@@ -40,6 +52,20 @@ pub fn check(doc: &Document, out: &mut Vec<Finding>) {
         }
         i = end.max(i + 1);
     }
+}
+
+/// Rendered lines of a block, leaving out code blocks and every line that
+/// holds nothing but images (a table row of screenshots included).
+fn counted_lines(doc: &Document, block: &Node) -> usize {
+    if matches!(block, Node::Code(_)) {
+        return 0;
+    }
+    doc.source_of(block)
+        .lines()
+        .map(|line| IMAGE.replace_all(line, ""))
+        .filter(|line| line.chars().any(|c| !c.is_whitespace() && c != '|'))
+        .map(|line| rendered_lines(&line))
+        .sum()
 }
 
 fn is_heading(node: &Node) -> bool {

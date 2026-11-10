@@ -82,7 +82,7 @@ osekkai steps --check SKILL.md      # skill 本文のアンカーが 4 段の順
 | `no-list-item-separator` | 行頭句を ` — ` などで本文に繋ぐ形 |
 | `max-list-item-lines` | 1 箇条の見た目の行数（3 行まで） |
 | `max-list-block-items` | 1 つの親の下の項目数（合計 5 まで、深い階層ほど少なく） |
-| `max-section-lines` | 1 節の見た目の行数（12 行まで） |
+| `max-section-lines` | 1 節の見た目の行数（12 行まで、コードブロックと画像は数えない） |
 | `postscript-last` | 「蛇足」の段落が箇条の外の最後にあるか |
 | `state-first` | ステートの宣言が最初のブロックにあるか |
 

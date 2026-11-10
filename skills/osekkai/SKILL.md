@@ -180,8 +180,8 @@ or an email will not render it. Rules:
 - Node labels use the bullets' words — one word per thing applies here
   too.
 - One diagram per document, placed in its own `##` section (`## 流れ`)
-  or right under the title, so its lines do not eat the twelve a section
-  gets for bullets; the lint counts a code block's lines like any other.
+  or right under the title. The lint does not count a code block's or an
+  image's lines toward a section.
 - A diagram the reader can draw from the bullets is not needed; the
   author's PR skill draws one only when a change rewires three or more
   parts, and the same bar holds here.
