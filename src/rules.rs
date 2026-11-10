@@ -17,6 +17,7 @@ mod no_list_item_separator;
 mod no_sentence_chain_in_list_item;
 mod no_unknown_term;
 mod postscript_last;
+mod require_diagram_caption;
 mod require_heading;
 mod state_first;
 
@@ -39,6 +40,7 @@ const STRUCTURAL: &[Rule] = &[
     max_list_block_items::check,
     max_section_lines::check,
     postscript_last::check,
+    require_diagram_caption::check,
 ];
 
 /// Rules that a declared reader state switches on. Each one checks its own

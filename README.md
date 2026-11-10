@@ -84,6 +84,7 @@ osekkai steps --check SKILL.md      # skill 本文のアンカーが 4 段の順
 | `max-list-block-items` | 1 つの親の下の項目数（合計 5 まで、深い階層ほど少なく） |
 | `max-section-lines` | 1 節の見た目の行数（12 行まで、コードブロックと画像は数えない） |
 | `postscript-last` | 「蛇足」の段落が箇条の外の最後にあるか |
+| `require-diagram-caption` | mermaid の図の前か後に、読み方を書いた段落があるか |
 | `state-first` | ステートの宣言が最初のブロックにあるか |
 
 宣言されたステートで有効になるもの。
