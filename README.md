@@ -78,7 +78,7 @@ osekkai steps --check SKILL.md      # skill 本文のアンカーが 4 段の順
 | ID | 見るもの |
 | --- | --- |
 | `no-list-item-colon` | 箇条の中のコロン |
-| `no-sentence-chain-in-list-item` | 箇条の中で「。」で文を重ねる形 |
+| `no-sentence-chain-in-list-item` | 箇条の中で文を重ねる形（「。」、2 つ目の段落、「、なので」のようなつなぎ） |
 | `no-list-item-separator` | 行頭句を ` — ` などで本文に繋ぐ形 |
 | `max-list-item-lines` | 1 箇条の見た目の行数（3 行まで） |
 | `max-list-block-items` | 1 つの親の下の項目数（合計 5 まで、深い階層ほど少なく） |

@@ -210,7 +210,7 @@ each:
 | --- | --- |
 | `state-first`, `state-declaration` | Move the declaration to the first block; a value it rejects is not in `osekkai state list` |
 | `no-list-item-colon`, `no-list-item-separator` | The head becomes the bullet, what followed the colon becomes child bullets or one sentence |
-| `no-sentence-chain-in-list-item` | Split at the 「。」 into sibling or child bullets, or rewrite as one point |
+| `no-sentence-chain-in-list-item` | Split at the 「。」, the second paragraph, or the 「、なので」-style joint into sibling or child bullets, or rewrite as one point. Swapping 「。」 for 「、」 is the same chain |
 | `max-list-item-lines` | The bullet holds two points; split it, or move detail to a child |
 | `max-list-block-items`, `max-top-items` | Merge siblings that share an axis, or lift a group into a section |
 | `max-section-lines` | Split the section, or cut what the reader's state says to cut |
