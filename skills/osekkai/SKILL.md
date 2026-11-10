@@ -145,8 +145,10 @@ The author's own order:
      order with the source's author before compressing it. In the
      author's record a seven-step draft went five rounds because each of
      these was assumed instead of asked.
-7. **Move asides out.** Anything true but off the main line goes after
-   the list, as a paragraph starting 「蛇足だが」. Only one, only last.
+7. **Move asides out.** Anything true but off the main line goes into
+   one last section of its own (`## 補足`, or whatever name fits this
+   document). The author found the fixed 「蛇足だが」 opener awkward; the
+   position says it is an aside, not a set phrase.
 8. **Review the whole.** Reread as the reader. Is anything missing that
    they need? Did a fact the source itself lacks (an unstated
    assumption in an estimate) make it in as an open item? Does the title
@@ -214,7 +216,6 @@ each:
 | `max-list-item-lines` | The bullet holds two points; split it, or move detail to a child |
 | `max-list-block-items`, `max-top-items` | Group siblings that share an axis under a parent that names the group, or lift a group into a section |
 | `max-section-lines` | Split the section, or cut what the reader's state says to cut |
-| `postscript-last` | Move the 「蛇足だが」 paragraph after the last list, outside any bullet |
 | `require-diagram-caption` | Put one or two sentences right before or after the diagram on how to read it: what a box and an arrow stand for, what a colour marks |
 | `no-unknown-term` | The listed term is still in the text: drop the name, write the figure as a ratio, reword or cut the word |
 | `no-heading` | Flatten to a single list; the reader only needs to know |

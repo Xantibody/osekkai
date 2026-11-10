@@ -23,7 +23,7 @@ flowchart TD
     title["主題を仮に置く"] --> frame["骨組みを決める<br/>多ければ章、少なければ箇条"]
     frame --> fill["中身を入れ、広がらなければ畳む"]
     fill --> state["ステートに照らして残す・消す・説明を添える"]
-    state --> aside["本筋から外れたものは蛇足として最後に"]
+    state --> aside["本筋から外れたものは最後の補足の節に"]
     aside --> review["全体を見直す<br/>主題、分類、足りない情報"]
     review -. 直す .-> title
   end
@@ -84,7 +84,6 @@ osekkai steps --check SKILL.md      # skill 本文のアンカーが 4 段の順
 | `max-list-block-items` | 1 つの親の下の項目数（合計 5 まで、深い階層ほど少なく） |
 | `max-section-lines` | 1 節の見た目の行数（12 行まで、コードブロックと画像は数えない） |
 | `max-top-items` | 1 節の最上位の項目数（4 つまで）。大項目と中項目の 2 層を作らせる |
-| `postscript-last` | 「蛇足」の段落が箇条の外の最後にあるか |
 | `require-diagram-caption` | mermaid の図の前か後に、読み方を書いた段落があるか |
 | `state-first` | ステートの宣言が最初のブロックにあるか |
 
