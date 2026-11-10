@@ -104,8 +104,8 @@ pub const DIMENSIONS: &[Dimension] = &[
             Value {
                 key: "inform",
                 label: "知っておく",
-                guidance: "何が起きているかを数項目。章なし。判断の材料は消す",
-                rules: &["no-heading", "max-top-items"],
+                guidance: "何かが起きていると知りたいだけの読み手向け。何が起きているかを数項目、章なし、判断の材料は消す。中身を知りたい読み手には宣言しない",
+                rules: &["no-heading"],
             },
             Value {
                 key: "decide",
@@ -116,7 +116,7 @@ pub const DIMENSIONS: &[Dimension] = &[
             Value {
                 key: "act",
                 label: "手を動かす",
-                guidance: "例題がまだない",
+                guidance: "通常の流れ（番号付き）と例外を章で分け、毎回の確認と異常時だけの確認を分ける。原文の手順数は流れの段数ではないので、順序は原文の書き手に確かめる",
                 rules: &[],
             },
         ]),

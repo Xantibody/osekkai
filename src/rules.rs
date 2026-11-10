@@ -16,7 +16,7 @@ mod no_list_item_colon;
 mod no_list_item_separator;
 mod no_sentence_chain_in_list_item;
 mod no_unknown_term;
-mod postscript_last;
+mod require_diagram_caption;
 mod require_heading;
 mod state_first;
 
@@ -38,7 +38,8 @@ const STRUCTURAL: &[Rule] = &[
     max_list_item_lines::check,
     max_list_block_items::check,
     max_section_lines::check,
-    postscript_last::check,
+    max_top_items::check,
+    require_diagram_caption::check,
 ];
 
 /// Rules that a declared reader state switches on. Each one checks its own
@@ -48,7 +49,6 @@ type StateRule = fn(&Document, &State, &mut Vec<Finding>);
 const STATEFUL: &[StateRule] = &[
     no_unknown_term::check,
     no_heading::check,
-    max_top_items::check,
     decision_first::check,
     require_heading::check,
 ];

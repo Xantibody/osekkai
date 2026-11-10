@@ -1,7 +1,7 @@
 ---
 name: osekkai
-description: The author's way of turning a source text — a chat log, an investigation, a meeting — into a short Markdown summary for a named reader. Declare who the reader is, draft under that reader's state, make `osekkai lint` pass, hand over. Other skills (explain, pull-request, issue) load it as the base for any prose a human reads.
-when_to_use: 文章をまとめる、要約する、報告にする、別の読み手向けに書き直すとき — 「まとめて」「要約して」「報告書にして」「〇〇向けに書き直して」「調査メモにして」「議論を整理して」。PR 本文や作業報告など、explain skill が読み込むときも。
+description: The author's way of turning a source text — a chat log, an investigation, a meeting, a diff — into a short Markdown summary for a named reader. Every piece of prose a human reads goes through it, PR and issue bodies and end-of-task reports included. Declare who the reader is, draft under that reader's state, make `osekkai lint` pass, hand over.
+when_to_use: 文章をまとめる、要約する、報告にする、別の読み手向けに書き直すとき — 「まとめて」「要約して」「報告書にして」「〇〇向けに書き直して」「調査メモにして」「議論を整理して」。PR 本文、issue 本文、作業の終わりの報告を書くときも。
 ---
 
 # osekkai
@@ -40,6 +40,12 @@ and then kept, a lint finding and what you changed for it, a fact the
 source lacked. The record exists so the author can later reread how the
 text came to be and refine these steps; a record that only holds the
 final text teaches nothing.
+
+One record per document, also when a session writes ten PR bodies in a
+row; in the author's history one such session left none. When the
+writing goes to a subagent, its brief names this skill and the record's
+path. Briefs that said only 「pull-request と explain を読め」 left eight
+of thirteen subagents without osekkai and without a record.
 
 <!-- osekkai-step: declare-state -->
 
@@ -90,8 +96,12 @@ osekkai state show unknown=鈴木,佐藤,APM,310 万,450 万 history=unknown pur
 `state show` prints, per value, what to keep and what to cut, and which
 lint rules it turns on. `osekkai state list` prints the whole vocabulary.
 Declare only what the source touches; a text whose every term the reader
-knows needs no `unknown`. The declaration is an HTML comment, so GitHub
-does not render it and a PR body can keep it.
+knows needs no `unknown`. The declaration itself is never dropped:
+`history` always has an answer, so `<!-- osekkai: history=known -->` is
+the least a document carries. Five of the author's nine records handed
+over a PR body with no declaration at all, which leaves no trace that
+this step ran. The declaration is an HTML comment, so GitHub does not
+render it and a PR body can keep it.
 
 <!-- osekkai-step: draft -->
 
@@ -106,19 +116,29 @@ The author's own order:
 2. **Choose the middle structure.** Much material becomes `##` sections;
    little becomes a bulleted list. When unsure, start wide (概要 / 詳細)
    and fill it in.
-3. **Fold what did not grow.** If a section holds one or two bullets,
-   collapse the sections into one list. The author's example went from
-   two headings to a single nested list.
-4. **Walk between concrete and abstract.** The first grouping is by
+3. **Build two layers.** The author cannot follow a text that has no
+   layer of major items over the concrete ones. Put at least one
+   abstract layer first — `##` headings, parent bullets, or a diagram —
+   and the concrete facts (file names, figures, commands) beneath it.
+   Reading only the upper layer should give the whole picture. Of three
+   shapes tried on one memo, the author picked headings with nested
+   bullets; the same content as flat top-level bullets was 「省略しすぎ」.
+   The lint caps top-level items per section, which forces the grouping
+   but cannot tell whether the group names are abstract; that is yours.
+4. **Fold what did not grow.** If a section holds one or two bullets,
+   collapse the sections into one list, keeping the two layers as parent
+   and child bullets. The author's example went from two headings to a
+   single nested list.
+5. **Walk between concrete and abstract.** The first grouping is by
    whatever you noticed first and is allowed to be wrong; move items when
    the review shows a better axis. Do not expect to get it right once.
-5. **Do not promote a weak cause to the conclusion.** The source may say
+6. **Do not promote a weak cause to the conclusion.** The source may say
    X caused Y; check that the timing and the facts fit before leading
    with it. In the author's example the source blamed a container
    restart for a slowdown that started last week, but the restart was
    older than that, so it stayed a finding, not the conclusion. If the
    source gives no recommendation, write none of your own.
-6. **Apply the reader's state.** For each fact, keep, cut, or add a
+7. **Apply the reader's state.** For each fact, keep, cut, or add a
    one-line gloss, following the `state show` guidance:
    - `unknown=…`: a listed name is dropped and what was said stays; a
      listed figure becomes a ratio; a listed product or word is reworded,
@@ -145,12 +165,16 @@ The author's own order:
      order with the source's author before compressing it. In the
      author's record a seven-step draft went five rounds because each of
      these was assumed instead of asked.
-7. **Move asides out.** Anything true but off the main line goes after
-   the list, as a paragraph starting 「蛇足だが」. Only one, only last.
-8. **Review the whole.** Reread as the reader. Is anything missing that
+8. **Move asides out.** Anything true but off the main line goes into
+   one last section of its own (`## 補足`, or whatever name fits this
+   document). The author found the fixed 「蛇足だが」 opener awkward; the
+   position says it is an aside, not a set phrase.
+9. **Review the whole.** Reread as the reader. Is anything missing that
    they need? Did a fact the source itself lacks (an unstated
    assumption in an estimate) make it in as an open item? Does the title
-   still fit? Do this again after every round of feedback, not only on
+   still fit? Does every claim match the source? 「Rust と画面の両方の
+   テストで確かめた」 went out in a PR body when only the Rust tests
+   existed, and nothing but a later review caught it. Do this again after every round of feedback, not only on
    the first draft: a fix made at the pointed-out line changes what the
    other sections mean. In the author's record two rounds of local fixes
    left a role table that the new flow no longer used, and the third
@@ -166,22 +190,47 @@ The author's own order:
 - When the same explanation appears twice, merge the two places or split
   them so each says it once.
 - No colon inside a bullet (`- 調査結果: キャッシュは問題なし`), no second
-  sentence inside a bullet (`- A。B。`), no ` — ` or `**label**:` joining a
-  head to a body. The head becomes the bullet, the body its children.
+  sentence inside a bullet (`- A。B。`, `- A、なので B`, or a second
+  paragraph under it), no ` — ` or `**label**:` joining a head to a body.
+  The head becomes the bullet, the body its children.
+- Prose outside the bullets may go anywhere: a lead stating the premise
+  or the purpose, a sentence between two lists, the reading of a diagram.
+  When the point is hard to put in sentences, draw it instead.
+- One sentence per line. Break the line after every 「。」 in prose, so
+  each sentence reads on its own; GitHub PR and issue bodies render the
+  break as it is written.
 
 ### Diagrams
 
-When the point is a flow with branches, or how three or more parts
-connect, bullets alone make the reader rebuild the picture in their head.
-Draw it once as a `mermaid` block (`flowchart` for a flow, `sequenceDiagram`
-for who sends what to whom) and keep the bullets, since a chat message
-or an email will not render it. Rules:
+When the point is a flow with branches, how three or more parts connect,
+or anything that is hard to put in sentences, bullets alone make the
+reader rebuild the picture in their head. Draw it as a `mermaid` block
+and write one or two sentences right before or after it on how to read
+it (the lint checks the sentences are there). The bullets around it
+carry what the picture does not show; do not repeat the diagram as
+bullets. Where mermaid does not render (a chat message, an email), write
+the bullets instead of the diagram.
 
-- Node labels use the bullets' words — one word per thing applies here
-  too.
-- One diagram per document, placed in its own `##` section (`## 流れ`)
-  or right under the title, so its lines do not eat the twelve a section
-  gets for bullets; the lint counts a code block's lines like any other.
+Decide first what the picture has to answer, then draw one diagram per
+question. Explaining a mechanism and where it is slow is two questions,
+so two diagrams: the parts and how they connect, then the time each step
+takes. Rules, each from a round the author sent back:
+
+- **Order follows reality.** Steps that run one after another are drawn
+  in series; arrows fanning into one box read as running at once. A time
+  breakdown is serial, so it is a `gantt` whose bar lengths are the
+  times, not a `flowchart` with times in the labels.
+- **Boxes are parts at the grain of 「UI」「バックエンド」「DB コンテナ」.**
+  Name the part, not its state or a description of it (「依存の入った
+  環境」 was sent back as over-explained). Use the bullets' words for
+  them, and draw only parts the source names.
+- **One kind of information, one place.** If times sit on the arrows,
+  every time sits on an arrow; a structure diagram carries no times at
+  all. Mixing the two made the author ask why some minutes were on
+  arrows and some in boxes.
+- **Placement.** Each diagram goes in its own `##` section (`## 仕組み`,
+  `## ボトルネック`) or right under the title. The lint does not count a
+  code block's or an image's lines toward a section.
 - A diagram the reader can draw from the bullets is not needed; the
   author's PR skill draws one only when a change rewires three or more
   parts, and the same bar holds here.
@@ -190,8 +239,8 @@ or an email will not render it. Rules:
 
 The author's limit is what a reader takes in at a glance: about three
 rendered lines per bullet, about twelve per section, five items under one
-parent with fewer at each deeper level, and four top-level items when the
-purpose is `inform`. The exact thresholds live in the binary; the lint
+parent with fewer at each deeper level, and four top-level items per
+section. The exact thresholds live in the binary; the lint
 reports them. When it fires, the fix is to merge siblings, lift a level
 up, or cut a section — never to shorten words until the count passes.
 
@@ -210,11 +259,11 @@ each:
 | --- | --- |
 | `state-first`, `state-declaration` | Move the declaration to the first block; a value it rejects is not in `osekkai state list` |
 | `no-list-item-colon`, `no-list-item-separator` | The head becomes the bullet, what followed the colon becomes child bullets or one sentence |
-| `no-sentence-chain-in-list-item` | Split at the 「。」 into sibling or child bullets, or rewrite as one point |
+| `no-sentence-chain-in-list-item` | Split at the 「。」, the second paragraph, or the 「、なので」-style joint into sibling or child bullets, or rewrite as one point. Swapping 「。」 for 「、」 is the same chain |
 | `max-list-item-lines` | The bullet holds two points; split it, or move detail to a child |
-| `max-list-block-items`, `max-top-items` | Merge siblings that share an axis, or lift a group into a section |
+| `max-list-block-items`, `max-top-items` | Group siblings that share an axis under a parent that names the group, or lift a group into a section |
 | `max-section-lines` | Split the section, or cut what the reader's state says to cut |
-| `postscript-last` | Move the 「蛇足だが」 paragraph after the last list, outside any bullet |
+| `require-diagram-caption` | Put one or two sentences right before or after the diagram on how to read it: what a box and an arrow stand for, what a colour marks |
 | `no-unknown-term` | The listed term is still in the text: drop the name, write the figure as a ratio, reword or cut the word |
 | `no-heading` | Flatten to a single list; the reader only needs to know |
 | `decision-first` | Put the request and its deadline in the first bullet; a request with no deadline says 「期限なし」 rather than inventing one |
@@ -233,8 +282,21 @@ Where the comment would show — a chat message, an email — delete the
 first line by hand before pasting. State the reader you assumed if the
 request did not name one.
 
+A report given to the user in the terminal ends with the URL of every
+remote thing the work touched — a PR, an issue, a CI run, a release —
+so they open it without looking for it:
+
+- bare and alone on its line; the terminal makes `https://` clickable,
+  and `[text](url)` or a URL inside a sentence is not
+- last, before any question the report goes on to ask
+- one line per thing; a PR and the issue filed from it are two lines
+- a thing not live yet (a tag not pushed) gets its future URL and
+  「push 後に有効」
+
 Then close the record opened in step 0. It ends with the declaration and
-the delivered text, after the log of what was tried:
+the delivered text in full — not 「PR 本文を参照」 or a path to a draft
+file, since a PR body gets edited and a draft gets deleted — after the
+log of what was tried:
 
 ```markdown
 # <slug>
