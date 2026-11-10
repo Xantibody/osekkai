@@ -51,9 +51,26 @@ pub fn check(doc: &Document, out: &mut Vec<Finding>) {
 }
 
 fn chains(text: &str) -> bool {
-    let body = text.trim_end().trim_end_matches('。');
+    let unquoted = without_quotes(text);
+    let body = unquoted.trim_end().trim_end_matches('。');
     body.contains('。')
         || SENTENCE_OPENERS
             .iter()
             .any(|w| body.contains(&format!("、{w}")))
+}
+
+/// The text with every 「…」 and 『…』 left out. A quoted 「。」 or a quoted
+/// remark is part of the bullet's one sentence, not a second one.
+fn without_quotes(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    let mut depth = 0usize;
+    for c in text.chars() {
+        match c {
+            '「' | '『' => depth += 1,
+            '」' | '』' if depth > 0 => depth -= 1,
+            _ if depth == 0 => out.push(c),
+            _ => {}
+        }
+    }
+    out
 }
