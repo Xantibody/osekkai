@@ -16,7 +16,7 @@ pub fn check(doc: &Document, out: &mut Vec<Finding>) {
             return;
         };
         let text = plain_text(paragraph);
-        let Some(idx) = text.find([':', '：']) else {
+        let Some(idx) = separator(&text) else {
             return;
         };
         let (line, column) = start(paragraph);
@@ -30,4 +30,15 @@ pub fn check(doc: &Document, out: &mut Vec<Finding>) {
             ),
         });
     });
+}
+
+/// The byte index of the first colon that joins a head to a body. A colon
+/// between two ASCII digits is a time or a ratio (「13:17」「3:2」), not a join.
+fn separator(text: &str) -> Option<usize> {
+    let bytes = text.as_bytes();
+    text.match_indices([':', '：']).map(|(i, _)| i).find(|&i| {
+        let digit_before = i > 0 && bytes[i - 1].is_ascii_digit();
+        let digit_after = bytes.get(i + 1).is_some_and(u8::is_ascii_digit);
+        !(text[i..].starts_with(':') && digit_before && digit_after)
+    })
 }

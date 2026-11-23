@@ -21,9 +21,14 @@ static IMAGE: LazyLock<Regex> = LazyLock::new(|| {
 });
 
 pub const ID: &str = "max-section-lines";
-// AIDEV-NOTE: 12 is four three-line bullets, a guess until an example shows
-// where the author splits a chapter.
-const MAX_LINES: usize = 12;
+// AIDEV-NOTE: 13, not the first guess of 12 (four three-line bullets): in
+// the author's records the rule most often fired at exactly 13 lines, and
+// writers passed it by trimming words, not by splitting the chapter.
+const MAX_LINES: usize = 13;
+
+pub(super) fn limit() -> String {
+    format!("1 節は {MAX_LINES} 行まで（見た目の行数。コードブロックと画像は数えない）")
+}
 
 pub fn check(doc: &Document, out: &mut Vec<Finding>) {
     let Some(blocks) = doc.root.children() else {

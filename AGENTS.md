@@ -12,12 +12,14 @@
 | --- | --- |
 | `src/procedure.rs` | 守るべき 4 段。`osekkai steps` が印字し、`--check` が skill のアンカー順を確かめる |
 | `src/state.rs` | 読み手のステートの次元と値。guidance（skill が読む）と rules（lint が有効にする）を属性に持つ |
-| `src/rules/` | 1 ルール 1 ファイル。しきい値はここにだけ書く |
+| `src/rules/` | 1 ルール 1 ファイル。しきい値はここにだけ書き、`osekkai limits` が印字する |
+| `src/record.rs` | 作業の記録の形。`osekkai record check` が渡すときに確かめる。過去の記録には当てない |
 | `tests/fixtures/<rule>/{ok,ng}/` | ルールごとの fixture。`ng` は `rule@line` を `.expect` に書く |
+| `tests/records/{ok,ng}/` | 記録の fixture。ファイル名が slug を決める。中身は架空 |
 | `tests/fixtures/examples/` | 本人が受け入れた架空の例題。sidecar が残っているものは、例を直すかルールを直すかが未決 |
 | `skills/osekkai/` | skill 本文。4 段のアンカーを持つ |
 | `.ai/` | 設計の経緯、plan、例題の原文。gitignore 下で commit しない |
-| `~/.osekkai/` | skill が書くまとめ 1 件ごとの作業の記録。リポジトリの外 |
+| `~/.osekkai/` | skill が書くまとめ 1 件ごとの作業の記録。リポジトリの外。`reviews.md` が見直しごとの範囲と入れた案を持ち、次の見直しはそれより新しい記録だけを読む |
 
 ## 守ること
 

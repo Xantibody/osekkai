@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 use clap::{Parser, Subcommand, ValueEnum};
@@ -26,6 +26,13 @@ enum Command {
         #[command(subcommand)]
         command: StateCommand,
     },
+    /// The density thresholds the lint enforces, to plan the grouping before drafting
+    Limits,
+    /// The work records the skill writes in ~/.osekkai/
+    Record {
+        #[command(subcommand)]
+        command: RecordCommand,
+    },
     /// The fixed order of steps; with --check, verify a skill text keeps it
     Steps {
         /// A SKILL.md whose <!-- osekkai-step: ... --> anchors must follow the order
@@ -42,6 +49,16 @@ enum StateCommand {
     Show { declaration: Vec<String> },
 }
 
+#[derive(Subcommand)]
+enum RecordCommand {
+    /// Check a record's shape and lint the text it delivered, at hand-over
+    Check {
+        files: Vec<PathBuf>,
+        #[arg(long, value_enum, default_value_t = Format::Text)]
+        format: Format,
+    },
+}
+
 #[derive(Clone, Copy, ValueEnum)]
 enum Format {
     Text,
@@ -54,7 +71,10 @@ fn main() -> ExitCode {
             files,
             format,
             require_state,
-        } => lint(&files, format, &osekkai::Options { require_state }),
+        } => {
+            let options = osekkai::Options { require_state };
+            report(&files, format, |_, src| osekkai::lint_with(src, &options))
+        }
         Command::State {
             command: StateCommand::List,
         } => {
@@ -73,6 +93,16 @@ fn main() -> ExitCode {
                 ExitCode::from(2)
             }
         },
+        Command::Record {
+            command: RecordCommand::Check { files, format },
+        } => report(&files, format, |path, src| {
+            let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
+            osekkai::record::check(name, src)
+        }),
+        Command::Limits => {
+            print!("{}", osekkai::rules::limits());
+            ExitCode::SUCCESS
+        }
         Command::Steps { check: None } => {
             print!("{}", osekkai::procedure::describe());
             ExitCode::SUCCESS
@@ -100,7 +130,12 @@ struct FileResult<'a> {
     messages: Vec<osekkai::Finding>,
 }
 
-fn lint(files: &[PathBuf], format: Format, options: &osekkai::Options) -> ExitCode {
+/// Run `check` on every file and print its findings; exit 1 when any.
+fn report(
+    files: &[PathBuf],
+    format: Format,
+    check: impl Fn(&Path, &str) -> Vec<osekkai::Finding>,
+) -> ExitCode {
     let mut results = Vec::new();
     for path in files {
         let src = match std::fs::read_to_string(path) {
@@ -110,10 +145,7 @@ fn lint(files: &[PathBuf], format: Format, options: &osekkai::Options) -> ExitCo
                 return ExitCode::from(2);
             }
         };
-        results.push((
-            path.display().to_string(),
-            osekkai::lint_with(&src, options),
-        ));
+        results.push((path.display().to_string(), check(path, &src)));
     }
     let found = results.iter().any(|(_, f)| !f.is_empty());
     match format {

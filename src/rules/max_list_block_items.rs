@@ -12,6 +12,16 @@ pub const ID: &str = "max-list-block-items";
 const MAX_DESCENDANTS: usize = 5;
 const SIBLING_BASE: usize = 4;
 
+pub(super) fn limit() -> String {
+    let by_depth: Vec<String> = (1..SIBLING_BASE)
+        .map(|d| format!("深さ {d} は {} 項目", SIBLING_BASE - d))
+        .collect();
+    format!(
+        "1 つの親の下は合計 {MAX_DESCENDANTS} 項目まで。兄弟の数は、{}まで",
+        by_depth.join("、")
+    )
+}
+
 pub fn check(doc: &Document, out: &mut Vec<Finding>) {
     top_level_lists(&doc.root, &mut |list| visit(list, 0, out));
 }

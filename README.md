@@ -57,6 +57,8 @@ osekkai lint --format json <file>   # textlint と同じ ruleId キーの JSON
 osekkai lint --require-state <file> # 読み手のステートが宣言されていなければ指摘する
 osekkai state list                  # ステートの次元と値
 osekkai state show unknown=鈴木,APM purpose=inform  # そのステートの guidance と有効になる lint
+osekkai limits                      # 密度のしきい値（箇条の行数、項目数、節の行数）
+osekkai record check <record>       # 作業の記録の形と、渡した本文の lint（渡すときに回す）
 osekkai steps                       # 守るべき 4 段
 osekkai steps --check SKILL.md      # skill 本文のアンカーが 4 段の順で並んでいるか
 ```
@@ -79,13 +81,14 @@ osekkai steps --check SKILL.md      # skill 本文のアンカーが 4 段の順
 | --- | --- |
 | `no-list-item-colon` | 箇条の中のコロン |
 | `no-sentence-chain-in-list-item` | 箇条の中で文を重ねる形（「。」、2 つ目の段落、「、なので」のようなつなぎ） |
+| `no-sentence-chain-in-table-cell` | 表のセルの中で文を重ねる形（箇条と同じ判定） |
 | `no-list-item-separator` | 行頭句を ` — ` などで本文に繋ぐ形 |
 | `max-list-item-lines` | 1 箇条の見た目の行数（3 行まで） |
 | `max-list-block-items` | 1 つの親の下の項目数（合計 5 まで、深い階層ほど少なく） |
-| `max-section-lines` | 1 節の見た目の行数（12 行まで、コードブロックと画像は数えない） |
+| `max-section-lines` | 1 節の見た目の行数（13 行まで、コードブロックと画像は数えない） |
 | `max-top-items` | 1 節の最上位の項目数（4 つまで）。大項目と中項目の 2 層を作らせる |
 | `require-diagram-caption` | mermaid の図の前か後に、読み方を書いた段落があるか |
-| `state-first` | ステートの宣言が最初のブロックにあるか |
+| `state-first` | ステートの宣言が最初のブロックにあるか。宣言がないことは `--require-state` のときだけ指摘し、skill はこれを付けて回す |
 
 宣言されたステートで有効になるもの。
 

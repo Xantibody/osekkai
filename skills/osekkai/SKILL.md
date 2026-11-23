@@ -41,11 +41,22 @@ source lacked. The record exists so the author can later reread how the
 text came to be and refine these steps; a record that only holds the
 final text teaches nothing.
 
+The record is written in Japanese, the language of the text it records;
+the template's keys (`reader:`, `## Log`) stay as they are. Its heading
+is the slug alone, without the date the filename already carries.
+
 One record per document, also when a session writes ten PR bodies in a
-row; in the author's history one such session left none. When the
-writing goes to a subagent, its brief names this skill and the record's
-path. Briefs that said only 「pull-request と explain を読め」 left eight
-of thirteen subagents without osekkai and without a record.
+row; in the author's history one such session left none. When several
+bodies are drafted in one go, open every record before the first draft,
+and give each log only its own body's findings; what they share is one
+line, `- batch: <sibling slugs>`, never a copied log. Four records of one
+such session carried the same log word for word, one of them describing
+another PR. A PR body written in the session that also reports on it
+gets its own record. A record superseded by a later draft of the same
+text says which record replaced it. When the writing goes to a
+subagent, its brief names this skill and the record's path. Briefs that
+said only 「pull-request と explain を読め」 left eight of thirteen
+subagents without osekkai and without a record.
 
 <!-- osekkai-step: declare-state -->
 
@@ -98,9 +109,10 @@ lint rules it turns on. `osekkai state list` prints the whole vocabulary.
 Declare only what the source touches; a text whose every term the reader
 knows needs no `unknown`. The declaration itself is never dropped:
 `history` always has an answer, so `<!-- osekkai: history=known -->` is
-the least a document carries. Five of the author's nine records handed
-over a PR body with no declaration at all, which leaves no trace that
-this step ran. The declaration is an HTML comment, so GitHub does not
+the least a document carries, and the lint in step 3 refuses a text
+without one. A text with no declaration leaves no trace that this step
+ran; early records dropped it on purpose, mistaking "no `unknown` list"
+for "nothing to declare". The declaration is an HTML comment, so GitHub does not
 render it and a PR body can keep it.
 
 <!-- osekkai-step: draft -->
@@ -137,7 +149,10 @@ The author's own order:
    with it. In the author's example the source blamed a container
    restart for a slowdown that started last week, but the restart was
    older than that, so it stayed a finding, not the conclusion. If the
-   source gives no recommendation, write none of your own.
+   source gives no recommendation, write none of your own — unless the
+   source is your own work (a report on what you did): then a
+   recommendation may stand, marked （推奨）, with its reason in the
+   record's log.
 7. **Apply the reader's state.** For each fact, keep, cut, or add a
    one-line gloss, following the `state show` guidance:
    - `unknown=…`: a listed name is dropped and what was said stays; a
@@ -156,6 +171,20 @@ The author's own order:
      reader who asked 「わからないからまとめて」 wants the content, so
      leave `purpose` undeclared and keep the sections. `purpose=decide`:
      the request and its deadline first, then `## 案` and `## 未確定`.
+     `## 案` holds the options, `## 未確定` the facts not yet known, and
+     each open item says what stops you from settling it alone. An item
+     your own tools could settle (look at the screen, run the test) is
+     settled before hand-over, not listed: in the author's record two
+     such items came back as a complaint and took minutes to fix.
+   - Which `purpose`, if any: declare `decide` only when the text lays
+     out options for the reader to choose between. A yes or no on the
+     work itself — merge it? commit it? push it? — is not a choice
+     between options, so a PR body, or a report whose only question is
+     whether to commit, leaves `purpose` undeclared and asks that
+     question at the end. Two PR bodies in a row declared `decide`, and
+     its required sections fought the PR template both times. One
+     checklist section does not make the whole text `act`; give that
+     section numbered steps.
    - `purpose=act`: the reader works with the text open. Separate the
      usual flow from the exceptions (`## 通常の流れ` with numbered `###`,
      then `## 例外` with one `###` per situation), and separate a check
@@ -174,7 +203,20 @@ The author's own order:
    assumption in an estimate) make it in as an open item? Does the title
    still fit? Does every claim match the source? 「Rust と画面の両方の
    テストで確かめた」 went out in a PR body when only the Rust tests
-   existed, and nothing but a later review caught it. Do this again after every round of feedback, not only on
+   existed, and nothing but a later review caught it. The claims the
+   author's records let through, each worth one pass:
+   - Whatever the log calls a guess (推定, 要確認, 仮定) is asked about
+     before hand-over, or marked as a guess in the text.
+   - A list in the request or in another agent's report is not the
+     source. A PR's "what changed" comes from the diff and the old
+     code; a subagent's "verified" gets a log line naming what backs it.
+   - A quantifier (どれも, すべて) holds for every member; a count in a
+     parent (3 つ, 2 件) still matches its children after every fix.
+   - A diagram's arrows and its caption are claims too.
+   - Reread the reader line in the record: what it says the reader
+     needs (the push command, the leftovers) is in the text.
+
+   Do this again after every round of feedback, not only on
    the first draft: a fix made at the pointed-out line changes what the
    other sections mean. In the author's record two rounds of local fixes
    left a role table that the new flow no longer used, and the third
@@ -193,6 +235,11 @@ The author's own order:
   sentence inside a bullet (`- A。B。`, `- A、なので B`, or a second
   paragraph under it), no ` — ` or `**label**:` joining a head to a body.
   The head becomes the bullet, the body its children.
+- Two points joined by 「で、」 or by a clause-opening 「、つまり」 are
+  still two points, though the lint cannot see it. Split them as you
+  would a 「。」.
+- A table cell holds one point, like a bullet. A cell that needs a list
+  belongs in bullets.
 - Prose outside the bullets may go anywhere: a lead stating the premise
   or the purpose, a sentence between two lists, the reading of a diagram.
   When the point is hard to put in sentences, draw it instead.
@@ -237,32 +284,44 @@ takes. Rules, each from a round the author sent back:
 
 ### Density
 
-The author's limit is what a reader takes in at a glance: about three
-rendered lines per bullet, about twelve per section, five items under one
-parent with fewer at each deeper level, and four top-level items per
-section. The exact thresholds live in the binary; the lint
-reports them. When it fires, the fix is to merge siblings, lift a level
-up, or cut a section — never to shorten words until the count passes.
+The author's limit is what a reader takes in at a glance: lines per
+bullet, items under one parent with fewer at each deeper level, top-level
+items per section, and lines per section. The numbers live only in the
+binary; read them with `osekkai limits` before choosing the middle
+structure, so the grouping is planned rather than found by the lint.
+When it fires, the fix is to merge siblings, lift a level up, or cut a
+section. These only make the count pass, and the author's records are
+full of them: shortening words, pushing a sibling into a parenthesis,
+joining two points with 「で、」, squeezing more into a table cell. A new
+parent made to group siblings must be true of every child; check it
+against the source, since one such parent was invented and turned out
+false in review.
 
 <!-- osekkai-step: lint -->
 
 ## 3. Lint until clean
 
 ```sh
-osekkai lint <file>
+osekkai lint --require-state <file>
 ```
 
+`--require-state` makes a missing declaration a finding; without it the
+lint judges the structure alone, for text written without this skill.
+Lint the draft with everything the reader will see in it, the closing
+URL lines, leftovers and question included: the record keeps all of it,
+and `osekkai record check` lints it again at hand-over.
 Exit 0 means hand over. Each finding names the rule; this is how to fix
 each:
 
 | rule | fix |
 | --- | --- |
 | `state-first`, `state-declaration` | Move the declaration to the first block; a value it rejects is not in `osekkai state list` |
-| `no-list-item-colon`, `no-list-item-separator` | The head becomes the bullet, what followed the colon becomes child bullets or one sentence |
+| `no-list-item-colon`, `no-list-item-separator` | The head becomes the bullet, what followed the colon becomes child bullets or one sentence. A quoted commit subject, `host:port` or other identifier goes in inline code, which the rule skips |
 | `no-sentence-chain-in-list-item` | Split at the 「。」, the second paragraph, or the 「、なので」-style joint into sibling or child bullets, or rewrite as one point. Swapping 「。」 for 「、」 is the same chain |
+| `no-sentence-chain-in-table-cell` | A cell holds one point. Cut it to one, or move the table to bullets when a cell needs a list |
 | `max-list-item-lines` | The bullet holds two points; split it, or move detail to a child |
-| `max-list-block-items`, `max-top-items` | Group siblings that share an axis under a parent that names the group, or lift a group into a section |
-| `max-section-lines` | Split the section, or cut what the reader's state says to cut |
+| `max-list-block-items`, `max-top-items` | Group siblings that share an axis under a parent that names the group, or lift a group into a section. Not a fix: a parenthesis, a 「で、」 joint, a parent not true of every child (Density) |
+| `max-section-lines` | Split the section, or cut what the reader's state says to cut. Not a fix: shortening words or squeezing table cells (Density) |
 | `require-diagram-caption` | Put one or two sentences right before or after the diagram on how to read it: what a box and an arrow stand for, what a colour marks |
 | `no-unknown-term` | The listed term is still in the text: drop the name, write the figure as a ratio, reword or cut the word |
 | `no-heading` | Flatten to a single list; the reader only needs to know |
@@ -283,30 +342,54 @@ first line by hand before pasting. State the reader you assumed if the
 request did not name one.
 
 A report given to the user in the terminal ends with the URL of every
-remote thing the work touched — a PR, an issue, a CI run, a release —
-so they open it without looking for it:
+remote thing the work was for, read or changed — a PR, an issue, a CI
+run, a deployment, a release — so they open it without looking for it.
+The PR the work is for gets its line even when this step changed
+nothing remote, and so does a run the reader should check. Since the
+rule was written, one report in about twenty-two followed it; most
+named a PR or a run in the text and still ended without its URL.
 
 - bare and alone on its line; the terminal makes `https://` clickable,
   and `[text](url)` or a URL inside a sentence is not
 - last, before any question the report goes on to ask
-- one line per thing; a PR and the issue filed from it are two lines
-- a thing not live yet (a tag not pushed) gets its future URL and
-  「push 後に有効」
+- one line per thing; a PR and the issue filed from it are two lines,
+  with a blank line between, since Markdown joins adjacent lines into
+  one paragraph and `lint-body` reads the join as a sentence broken
+  mid-line
+- a thing not live yet (a tag not pushed, commits not pushed) gets its
+  future URL, or its branch's, and 「push 後に有効」
+- when nothing remote exists, no URL; the record's `urls:` line says so
+
+Never hand over a path under a scratchpad, `/tmp` or `/var/folders`:
+it can be wiped before the reader opens it. Move the file somewhere
+durable, or say it is temporary.
 
 Then close the record opened in step 0. It ends with the declaration and
 the delivered text in full — not 「PR 本文を参照」 or a path to a draft
 file, since a PR body gets edited and a draft gets deleted — after the
-log of what was tried:
+log of what was tried. In full means what the reader saw: code and
+mermaid blocks, the URL lines, and the closing question or leftovers
+list that followed the text, in the final version after any rewrite on
+delivery (an image upload). The declaration stays in the record even
+when it was deleted for a chat message. Append the draft
+with `cat <draft> >> <record>` rather than retyping it; records that
+retyped it lost a diagram to a 「(mermaid: ...)」 placeholder and dropped
+the closing question.
 
 ```markdown
 # <slug>
 
 - reader: <who, and what they will do with the text>
 - source: <what the text was made from>
+- destination: <PR body | issue | terminal | notes app | chat>
 
 ## Log
 
 - <one bullet per attempt, failure or change, in the order it happened>
+- user: 「<a remark the user made while you drafted, if any>」
+- diagram: <rendered and checked | not rendered, and why — only when there is one>
+- lint: <osekkai clean on first run | N findings, fixed>; <lint-body the same, or not run>
+- urls: <the URL lines handed over | none: nothing remote>
 
 ## Delivered
 
@@ -328,6 +411,7 @@ said and what changed for it:
 ### Log
 
 - <what changed, in the order it happened>
+- lint: <as in the first log>
 
 ### Delivered
 
@@ -340,6 +424,30 @@ reader's words; the shape above is what they settled on. A summary
 written for several readers at once is not a round: it is one `###` per
 reader under `## Delivered`.
 
+Before reporting the work done, run `osekkai record check <record>`. It
+checks the heading against the file name, the header lines, the log's
+`lint:` line, each round's parts, and lints every delivered text the
+way step 3 does. Run it on the record you just closed, not on old ones:
+rules change, and an old record was judged by the rules of its day.
+
+The `destination:` line decides two things the hand-over depends on:
+whether the declaration would show, and whether mermaid renders. Ask
+when you do not know; one record guessed both for a notes app. The
+`lint:` line is there even when the lint found nothing, since a clean
+run and a skipped one otherwise leave the same record.
+
+Only three of fifty-one records had a round, while feedback was given
+far more often. So:
+
+- Any comment on a delivered text opens a round, even one word in the
+  terminal, and so does any edit after review. Find the record by slug.
+- Feedback not from the reader is tagged:
+  `- feedback (reviewer): …`, `- feedback (review agent): …`.
+- When a feedback names a mistake, `learned:` is never left empty.
+- A follow-up document (the implementation report after a decision) is
+  not a round. It gets its own record, whose header adds
+  `- answers: <earlier slug>` and quotes the feedback that led to it.
+
 The record stays on the author's machine: the source may hold things that
 must not leave it, which is also why the osekkai repository holds only
 fictional examples.
@@ -347,7 +455,9 @@ fictional examples.
 ## Worked examples
 
 `tests/fixtures/examples/` in the osekkai repository holds the author's
-accepted outputs: one investigation memo for a teammate, and one
+accepted outputs: one investigation memo for a teammate, one
 discussion summarized twice, for an outsider and for the manager who has
-to decide. Read them to see the state change the shape before writing a
+to decide, a PR body with a diagram and its caption, and an end-of-task
+report that ends with its URL lines and a yes-or-no question, with no
+`purpose`. Read them to see the state change the shape before writing a
 new kind of document.
