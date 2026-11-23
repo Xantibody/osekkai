@@ -53,10 +53,16 @@ pub fn check(doc: &Document, out: &mut Vec<Finding>) {
 fn chains(text: &str) -> bool {
     let unquoted = without_quotes(text);
     let body = unquoted.trim_end().trim_end_matches('。');
-    body.contains('。')
-        || SENTENCE_OPENERS
-            .iter()
-            .any(|w| body.contains(&format!("、{w}")))
+    body.contains('。') || SENTENCE_OPENERS.iter().any(|w| opens_sentence(body, w))
+}
+
+/// Whether 「、」 followed by `opener` starts a new sentence somewhere in
+/// `body`. An opener followed by 「の」 modifies the noun after it
+/// (「、そのための PR」) and stays inside the sentence.
+fn opens_sentence(body: &str, opener: &str) -> bool {
+    let joint = format!("、{opener}");
+    body.match_indices(&joint)
+        .any(|(i, _)| !body[i + joint.len()..].starts_with('の'))
 }
 
 /// The text with every 「…」 and 『…』 left out. A quoted 「。」 or a quoted
