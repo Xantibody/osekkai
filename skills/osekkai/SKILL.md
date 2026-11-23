@@ -137,7 +137,10 @@ The author's own order:
    with it. In the author's example the source blamed a container
    restart for a slowdown that started last week, but the restart was
    older than that, so it stayed a finding, not the conclusion. If the
-   source gives no recommendation, write none of your own.
+   source gives no recommendation, write none of your own — unless the
+   source is your own work (a report on what you did): then a
+   recommendation may stand, marked （推奨）, with its reason in the
+   record's log.
 7. **Apply the reader's state.** For each fact, keep, cut, or add a
    one-line gloss, following the `state show` guidance:
    - `unknown=…`: a listed name is dropped and what was said stays; a
@@ -156,6 +159,20 @@ The author's own order:
      reader who asked 「わからないからまとめて」 wants the content, so
      leave `purpose` undeclared and keep the sections. `purpose=decide`:
      the request and its deadline first, then `## 案` and `## 未確定`.
+     `## 案` holds the options, `## 未確定` the facts not yet known, and
+     each open item says what stops you from settling it alone. An item
+     your own tools could settle (look at the screen, run the test) is
+     settled before hand-over, not listed: in the author's record two
+     such items came back as a complaint and took minutes to fix.
+   - Which `purpose`, if any: declare `decide` only when the text lays
+     out options for the reader to choose between. A yes or no on the
+     work itself — merge it? commit it? push it? — is not a choice
+     between options, so a PR body, or a report whose only question is
+     whether to commit, leaves `purpose` undeclared and asks that
+     question at the end. Two PR bodies in a row declared `decide`, and
+     its required sections fought the PR template both times. One
+     checklist section does not make the whole text `act`; give that
+     section numbered steps.
    - `purpose=act`: the reader works with the text open. Separate the
      usual flow from the exceptions (`## 通常の流れ` with numbered `###`,
      then `## 例外` with one `###` per situation), and separate a check
@@ -174,7 +191,20 @@ The author's own order:
    assumption in an estimate) make it in as an open item? Does the title
    still fit? Does every claim match the source? 「Rust と画面の両方の
    テストで確かめた」 went out in a PR body when only the Rust tests
-   existed, and nothing but a later review caught it. Do this again after every round of feedback, not only on
+   existed, and nothing but a later review caught it. The claims the
+   author's records let through, each worth one pass:
+   - Whatever the log calls a guess (推定, 要確認, 仮定) is asked about
+     before hand-over, or marked as a guess in the text.
+   - A list in the request or in another agent's report is not the
+     source. A PR's "what changed" comes from the diff and the old
+     code; a subagent's "verified" gets a log line naming what backs it.
+   - A quantifier (どれも, すべて) holds for every member; a count in a
+     parent (3 つ, 2 件) still matches its children after every fix.
+   - A diagram's arrows and its caption are claims too.
+   - Reread the reader line in the record: what it says the reader
+     needs (the push command, the leftovers) is in the text.
+
+   Do this again after every round of feedback, not only on
    the first draft: a fix made at the pointed-out line changes what the
    other sections mean. In the author's record two rounds of local fixes
    left a role table that the new flow no longer used, and the third
@@ -193,6 +223,11 @@ The author's own order:
   sentence inside a bullet (`- A。B。`, `- A、なので B`, or a second
   paragraph under it), no ` — ` or `**label**:` joining a head to a body.
   The head becomes the bullet, the body its children.
+- Two points joined by 「で、」 or by a clause-opening 「、つまり」 are
+  still two points, though the lint cannot see it. Split them as you
+  would a 「。」.
+- A table cell holds one point, like a bullet. A cell that needs a list
+  belongs in bullets.
 - Prose outside the bullets may go anywhere: a lead stating the premise
   or the purpose, a sentence between two lists, the reading of a diagram.
   When the point is hard to put in sentences, draw it instead.
@@ -243,7 +278,12 @@ items per section, and lines per section. The numbers live only in the
 binary; read them with `osekkai limits` before choosing the middle
 structure, so the grouping is planned rather than found by the lint.
 When it fires, the fix is to merge siblings, lift a level up, or cut a
-section — never to shorten words until the count passes.
+section. These only make the count pass, and the author's records are
+full of them: shortening words, pushing a sibling into a parenthesis,
+joining two points with 「で、」, squeezing more into a table cell. A new
+parent made to group siblings must be true of every child; check it
+against the source, since one such parent was invented and turned out
+false in review.
 
 <!-- osekkai-step: lint -->
 
@@ -259,12 +299,12 @@ each:
 | rule | fix |
 | --- | --- |
 | `state-first`, `state-declaration` | Move the declaration to the first block; a value it rejects is not in `osekkai state list` |
-| `no-list-item-colon`, `no-list-item-separator` | The head becomes the bullet, what followed the colon becomes child bullets or one sentence |
+| `no-list-item-colon`, `no-list-item-separator` | The head becomes the bullet, what followed the colon becomes child bullets or one sentence. A quoted commit subject, `host:port` or other identifier goes in inline code, which the rule skips |
 | `no-sentence-chain-in-list-item` | Split at the 「。」, the second paragraph, or the 「、なので」-style joint into sibling or child bullets, or rewrite as one point. Swapping 「。」 for 「、」 is the same chain |
 | `no-sentence-chain-in-table-cell` | A cell holds one point. Cut it to one, or move the table to bullets when a cell needs a list |
 | `max-list-item-lines` | The bullet holds two points; split it, or move detail to a child |
-| `max-list-block-items`, `max-top-items` | Group siblings that share an axis under a parent that names the group, or lift a group into a section |
-| `max-section-lines` | Split the section, or cut what the reader's state says to cut |
+| `max-list-block-items`, `max-top-items` | Group siblings that share an axis under a parent that names the group, or lift a group into a section. Not a fix: a parenthesis, a 「で、」 joint, a parent not true of every child (Density) |
+| `max-section-lines` | Split the section, or cut what the reader's state says to cut. Not a fix: shortening words or squeezing table cells (Density) |
 | `require-diagram-caption` | Put one or two sentences right before or after the diagram on how to read it: what a box and an arrow stand for, what a colour marks |
 | `no-unknown-term` | The listed term is still in the text: drop the name, write the figure as a ratio, reword or cut the word |
 | `no-heading` | Flatten to a single list; the reader only needs to know |
