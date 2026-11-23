@@ -7,6 +7,7 @@
 
 pub mod doc;
 pub mod procedure;
+pub mod record;
 pub mod rules;
 pub mod state;
 

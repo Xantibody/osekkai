@@ -28,6 +28,11 @@ enum Command {
     },
     /// The density thresholds the lint enforces, to plan the grouping before drafting
     Limits,
+    /// The work records the skill writes in ~/.osekkai/
+    Record {
+        #[command(subcommand)]
+        command: RecordCommand,
+    },
     /// The fixed order of steps; with --check, verify a skill text keeps it
     Steps {
         /// A SKILL.md whose <!-- osekkai-step: ... --> anchors must follow the order
@@ -42,6 +47,16 @@ enum StateCommand {
     List,
     /// Guidance and lint rules for a declared state, e.g. `unknown=鈴木,APM purpose=inform`
     Show { declaration: Vec<String> },
+}
+
+#[derive(Subcommand)]
+enum RecordCommand {
+    /// Check a record's shape and lint the text it delivered, at hand-over
+    Check {
+        files: Vec<PathBuf>,
+        #[arg(long, value_enum, default_value_t = Format::Text)]
+        format: Format,
+    },
 }
 
 #[derive(Clone, Copy, ValueEnum)]
@@ -78,6 +93,12 @@ fn main() -> ExitCode {
                 ExitCode::from(2)
             }
         },
+        Command::Record {
+            command: RecordCommand::Check { files, format },
+        } => report(&files, format, |path, src| {
+            let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
+            osekkai::record::check(name, src)
+        }),
         Command::Limits => {
             print!("{}", osekkai::rules::limits());
             ExitCode::SUCCESS

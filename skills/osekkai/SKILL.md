@@ -307,6 +307,9 @@ osekkai lint --require-state <file>
 
 `--require-state` makes a missing declaration a finding; without it the
 lint judges the structure alone, for text written without this skill.
+Lint the draft with everything the reader will see in it, the closing
+URL lines, leftovers and question included: the record keeps all of it,
+and `osekkai record check` lints it again at hand-over.
 Exit 0 means hand over. Each finding names the rule; this is how to fix
 each:
 
@@ -367,7 +370,8 @@ file, since a PR body gets edited and a draft gets deleted — after the
 log of what was tried. In full means what the reader saw: code and
 mermaid blocks, the URL lines, and the closing question or leftovers
 list that followed the text, in the final version after any rewrite on
-delivery (an image upload, the declaration removed). Append the draft
+delivery (an image upload). The declaration stays in the record even
+when it was deleted for a chat message. Append the draft
 with `cat <draft> >> <record>` rather than retyping it; records that
 retyped it lost a diagram to a 「(mermaid: ...)」 placeholder and dropped
 the closing question.
@@ -419,6 +423,12 @@ The author's records held this three different ways (a blank line, a
 reader's words; the shape above is what they settled on. A summary
 written for several readers at once is not a round: it is one `###` per
 reader under `## Delivered`.
+
+Before reporting the work done, run `osekkai record check <record>`. It
+checks the heading against the file name, the header lines, the log's
+`lint:` line, each round's parts, and lints every delivered text the
+way step 3 does. Run it on the record you just closed, not on old ones:
+rules change, and an old record was judged by the rules of its day.
 
 The `destination:` line decides two things the hand-over depends on:
 whether the declaration would show, and whether mermaid renders. Ask
