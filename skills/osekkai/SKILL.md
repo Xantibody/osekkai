@@ -41,11 +41,22 @@ source lacked. The record exists so the author can later reread how the
 text came to be and refine these steps; a record that only holds the
 final text teaches nothing.
 
+The record is written in Japanese, the language of the text it records;
+the template's keys (`reader:`, `## Log`) stay as they are. Its heading
+is the slug alone, without the date the filename already carries.
+
 One record per document, also when a session writes ten PR bodies in a
-row; in the author's history one such session left none. When the
-writing goes to a subagent, its brief names this skill and the record's
-path. Briefs that said only 「pull-request と explain を読め」 left eight
-of thirteen subagents without osekkai and without a record.
+row; in the author's history one such session left none. When several
+bodies are drafted in one go, open every record before the first draft,
+and give each log only its own body's findings; what they share is one
+line, `- batch: <sibling slugs>`, never a copied log. Four records of one
+such session carried the same log word for word, one of them describing
+another PR. A PR body written in the session that also reports on it
+gets its own record. A record superseded by a later draft of the same
+text says which record replaced it. When the writing goes to a
+subagent, its brief names this skill and the record's path. Briefs that
+said only 「pull-request と explain を読め」 left eight of thirteen
+subagents without osekkai and without a record.
 
 <!-- osekkai-step: declare-state -->
 
@@ -328,30 +339,53 @@ first line by hand before pasting. State the reader you assumed if the
 request did not name one.
 
 A report given to the user in the terminal ends with the URL of every
-remote thing the work touched — a PR, an issue, a CI run, a release —
-so they open it without looking for it:
+remote thing the work was for, read or changed — a PR, an issue, a CI
+run, a deployment, a release — so they open it without looking for it.
+The PR the work is for gets its line even when this step changed
+nothing remote, and so does a run the reader should check. Since the
+rule was written, one report in about twenty-two followed it; most
+named a PR or a run in the text and still ended without its URL.
 
 - bare and alone on its line; the terminal makes `https://` clickable,
   and `[text](url)` or a URL inside a sentence is not
 - last, before any question the report goes on to ask
-- one line per thing; a PR and the issue filed from it are two lines
-- a thing not live yet (a tag not pushed) gets its future URL and
-  「push 後に有効」
+- one line per thing; a PR and the issue filed from it are two lines,
+  with a blank line between, since Markdown joins adjacent lines into
+  one paragraph and `lint-body` reads the join as a sentence broken
+  mid-line
+- a thing not live yet (a tag not pushed, commits not pushed) gets its
+  future URL, or its branch's, and 「push 後に有効」
+- when nothing remote exists, no URL; the record's `urls:` line says so
+
+Never hand over a path under a scratchpad, `/tmp` or `/var/folders`:
+it can be wiped before the reader opens it. Move the file somewhere
+durable, or say it is temporary.
 
 Then close the record opened in step 0. It ends with the declaration and
 the delivered text in full — not 「PR 本文を参照」 or a path to a draft
 file, since a PR body gets edited and a draft gets deleted — after the
-log of what was tried:
+log of what was tried. In full means what the reader saw: code and
+mermaid blocks, the URL lines, and the closing question or leftovers
+list that followed the text, in the final version after any rewrite on
+delivery (an image upload, the declaration removed). Append the draft
+with `cat <draft> >> <record>` rather than retyping it; records that
+retyped it lost a diagram to a 「(mermaid: ...)」 placeholder and dropped
+the closing question.
 
 ```markdown
 # <slug>
 
 - reader: <who, and what they will do with the text>
 - source: <what the text was made from>
+- destination: <PR body | issue | terminal | notes app | chat>
 
 ## Log
 
 - <one bullet per attempt, failure or change, in the order it happened>
+- user: 「<a remark the user made while you drafted, if any>」
+- diagram: <rendered and checked | not rendered, and why — only when there is one>
+- lint: <osekkai clean on first run | N findings, fixed>; <lint-body the same, or not run>
+- urls: <the URL lines handed over | none: nothing remote>
 
 ## Delivered
 
@@ -373,6 +407,7 @@ said and what changed for it:
 ### Log
 
 - <what changed, in the order it happened>
+- lint: <as in the first log>
 
 ### Delivered
 
@@ -384,6 +419,24 @@ The author's records held this three different ways (a blank line, a
 reader's words; the shape above is what they settled on. A summary
 written for several readers at once is not a round: it is one `###` per
 reader under `## Delivered`.
+
+The `destination:` line decides two things the hand-over depends on:
+whether the declaration would show, and whether mermaid renders. Ask
+when you do not know; one record guessed both for a notes app. The
+`lint:` line is there even when the lint found nothing, since a clean
+run and a skipped one otherwise leave the same record.
+
+Only three of fifty-one records had a round, while feedback was given
+far more often. So:
+
+- Any comment on a delivered text opens a round, even one word in the
+  terminal, and so does any edit after review. Find the record by slug.
+- Feedback not from the reader is tagged:
+  `- feedback (reviewer): …`, `- feedback (review agent): …`.
+- When a feedback names a mistake, `learned:` is never left empty.
+- A follow-up document (the implementation report after a decision) is
+  not a round. It gets its own record, whose header adds
+  `- answers: <earlier slug>` and quotes the feedback that led to it.
 
 The record stays on the author's machine: the source may hold things that
 must not leave it, which is also why the osekkai repository holds only
