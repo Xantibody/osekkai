@@ -110,7 +110,7 @@ pub const DIMENSIONS: &[Dimension] = &[
             Value {
                 key: "decide",
                 label: "判断する",
-                guidance: "決めてほしいことと期限を先頭。案と未確定事項を章に分ける",
+                guidance: "選択肢を並べて選んでもらう読み手向け。決めてほしいことと期限を先頭。案と未確定事項を章に分ける。進めてよいかを問うだけ（merge、commit、push）なら宣言しない",
                 rules: &["decision-first", "require-heading"],
             },
             Value {
