@@ -98,9 +98,10 @@ lint rules it turns on. `osekkai state list` prints the whole vocabulary.
 Declare only what the source touches; a text whose every term the reader
 knows needs no `unknown`. The declaration itself is never dropped:
 `history` always has an answer, so `<!-- osekkai: history=known -->` is
-the least a document carries. Five of the author's nine records handed
-over a PR body with no declaration at all, which leaves no trace that
-this step ran. The declaration is an HTML comment, so GitHub does not
+the least a document carries, and the lint in step 3 refuses a text
+without one. A text with no declaration leaves no trace that this step
+ran; early records dropped it on purpose, mistaking "no `unknown` list"
+for "nothing to declare". The declaration is an HTML comment, so GitHub does not
 render it and a PR body can keep it.
 
 <!-- osekkai-step: draft -->
@@ -290,9 +291,11 @@ false in review.
 ## 3. Lint until clean
 
 ```sh
-osekkai lint <file>
+osekkai lint --require-state <file>
 ```
 
+`--require-state` makes a missing declaration a finding; without it the
+lint judges the structure alone, for text written without this skill.
 Exit 0 means hand over. Each finding names the rule; this is how to fix
 each:
 

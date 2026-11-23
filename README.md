@@ -87,7 +87,7 @@ osekkai steps --check SKILL.md      # skill 本文のアンカーが 4 段の順
 | `max-section-lines` | 1 節の見た目の行数（13 行まで、コードブロックと画像は数えない） |
 | `max-top-items` | 1 節の最上位の項目数（4 つまで）。大項目と中項目の 2 層を作らせる |
 | `require-diagram-caption` | mermaid の図の前か後に、読み方を書いた段落があるか |
-| `state-first` | ステートの宣言が最初のブロックにあるか |
+| `state-first` | ステートの宣言が最初のブロックにあるか。宣言がないことは `--require-state` のときだけ指摘し、skill はこれを付けて回す |
 
 宣言されたステートで有効になるもの。
 
