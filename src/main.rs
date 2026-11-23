@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 use clap::{Parser, Subcommand, ValueEnum};
@@ -56,7 +56,10 @@ fn main() -> ExitCode {
             files,
             format,
             require_state,
-        } => lint(&files, format, &osekkai::Options { require_state }),
+        } => {
+            let options = osekkai::Options { require_state };
+            report(&files, format, |_, src| osekkai::lint_with(src, &options))
+        }
         Command::State {
             command: StateCommand::List,
         } => {
@@ -106,7 +109,12 @@ struct FileResult<'a> {
     messages: Vec<osekkai::Finding>,
 }
 
-fn lint(files: &[PathBuf], format: Format, options: &osekkai::Options) -> ExitCode {
+/// Run `check` on every file and print its findings; exit 1 when any.
+fn report(
+    files: &[PathBuf],
+    format: Format,
+    check: impl Fn(&Path, &str) -> Vec<osekkai::Finding>,
+) -> ExitCode {
     let mut results = Vec::new();
     for path in files {
         let src = match std::fs::read_to_string(path) {
@@ -116,10 +124,7 @@ fn lint(files: &[PathBuf], format: Format, options: &osekkai::Options) -> ExitCo
                 return ExitCode::from(2);
             }
         };
-        results.push((
-            path.display().to_string(),
-            osekkai::lint_with(&src, options),
-        ));
+        results.push((path.display().to_string(), check(path, &src)));
     }
     let found = results.iter().any(|(_, f)| !f.is_empty());
     match format {
