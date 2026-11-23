@@ -14,6 +14,10 @@ use crate::doc::{start, Document};
 pub const ID: &str = "max-top-items";
 const MAX_TOP_ITEMS: usize = 4;
 
+pub(super) fn limit() -> String {
+    format!("1 節の最上位の項目は {MAX_TOP_ITEMS} つまで（見出しで数え直す）")
+}
+
 pub fn check(doc: &Document, out: &mut Vec<Finding>) {
     let Some(blocks) = doc.root.children() else {
         return;

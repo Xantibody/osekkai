@@ -237,12 +237,13 @@ takes. Rules, each from a round the author sent back:
 
 ### Density
 
-The author's limit is what a reader takes in at a glance: about three
-rendered lines per bullet, about thirteen per section, five items under one
-parent with fewer at each deeper level, and four top-level items per
-section. The exact thresholds live in the binary; the lint
-reports them. When it fires, the fix is to merge siblings, lift a level
-up, or cut a section — never to shorten words until the count passes.
+The author's limit is what a reader takes in at a glance: lines per
+bullet, items under one parent with fewer at each deeper level, top-level
+items per section, and lines per section. The numbers live only in the
+binary; read them with `osekkai limits` before choosing the middle
+structure, so the grouping is planned rather than found by the lint.
+When it fires, the fix is to merge siblings, lift a level up, or cut a
+section — never to shorten words until the count passes.
 
 <!-- osekkai-step: lint -->
 

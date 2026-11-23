@@ -57,6 +57,7 @@ osekkai lint --format json <file>   # textlint と同じ ruleId キーの JSON
 osekkai lint --require-state <file> # 読み手のステートが宣言されていなければ指摘する
 osekkai state list                  # ステートの次元と値
 osekkai state show unknown=鈴木,APM purpose=inform  # そのステートの guidance と有効になる lint
+osekkai limits                      # 密度のしきい値（箇条の行数、項目数、節の行数）
 osekkai steps                       # 守るべき 4 段
 osekkai steps --check SKILL.md      # skill 本文のアンカーが 4 段の順で並んでいるか
 ```

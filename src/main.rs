@@ -26,6 +26,8 @@ enum Command {
         #[command(subcommand)]
         command: StateCommand,
     },
+    /// The density thresholds the lint enforces, to plan the grouping before drafting
+    Limits,
     /// The fixed order of steps; with --check, verify a skill text keeps it
     Steps {
         /// A SKILL.md whose <!-- osekkai-step: ... --> anchors must follow the order
@@ -73,6 +75,10 @@ fn main() -> ExitCode {
                 ExitCode::from(2)
             }
         },
+        Command::Limits => {
+            print!("{}", osekkai::rules::limits());
+            ExitCode::SUCCESS
+        }
         Command::Steps { check: None } => {
             print!("{}", osekkai::procedure::describe());
             ExitCode::SUCCESS

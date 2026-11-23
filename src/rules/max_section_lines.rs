@@ -26,6 +26,10 @@ pub const ID: &str = "max-section-lines";
 // writers passed it by trimming words, not by splitting the chapter.
 const MAX_LINES: usize = 13;
 
+pub(super) fn limit() -> String {
+    format!("1 節は {MAX_LINES} 行まで（見た目の行数。コードブロックと画像は数えない）")
+}
+
 pub fn check(doc: &Document, out: &mut Vec<Finding>) {
     let Some(blocks) = doc.root.children() else {
         return;

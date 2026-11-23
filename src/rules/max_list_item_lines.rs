@@ -10,6 +10,10 @@ use crate::doc::{first_paragraph, rendered_lines, start, walk, Document};
 pub const ID: &str = "max-list-item-lines";
 const MAX_LINES: usize = 3;
 
+pub(super) fn limit() -> String {
+    format!("1 箇条は {MAX_LINES} 行まで（見た目の行数）")
+}
+
 pub fn check(doc: &Document, out: &mut Vec<Finding>) {
     walk(&doc.root, &mut |node| {
         let Node::ListItem(item) = node else { return };
