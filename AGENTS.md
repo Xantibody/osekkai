@@ -19,7 +19,7 @@
 | `tests/fixtures/examples/` | 本人が受け入れた架空の例題。sidecar が残っているものは、例を直すかルールを直すかが未決 |
 | `skills/osekkai/` | skill 本文。4 段のアンカーを持つ |
 | `.ai/` | 設計の経緯、plan、例題の原文。gitignore 下で commit しない |
-| `~/.osekkai/` | skill が書くまとめ 1 件ごとの作業の記録。リポジトリの外 |
+| `~/.osekkai/` | skill が書くまとめ 1 件ごとの作業の記録。リポジトリの外。`reviews.md` が見直しごとの範囲と入れた案を持ち、次の見直しはそれより新しい記録だけを読む |
 
 ## 守ること
 
