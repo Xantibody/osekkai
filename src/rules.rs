@@ -15,6 +15,7 @@ mod no_heading;
 mod no_list_item_colon;
 mod no_list_item_separator;
 mod no_sentence_chain_in_list_item;
+mod no_sentence_chain_in_table_cell;
 mod no_unknown_term;
 mod require_diagram_caption;
 mod require_heading;
@@ -35,6 +36,7 @@ const STRUCTURAL: &[Rule] = &[
     no_list_item_colon::check,
     no_list_item_separator::check,
     no_sentence_chain_in_list_item::check,
+    no_sentence_chain_in_table_cell::check,
     max_list_item_lines::check,
     max_list_block_items::check,
     max_section_lines::check,
