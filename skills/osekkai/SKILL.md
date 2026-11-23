@@ -238,7 +238,7 @@ takes. Rules, each from a round the author sent back:
 ### Density
 
 The author's limit is what a reader takes in at a glance: about three
-rendered lines per bullet, about twelve per section, five items under one
+rendered lines per bullet, about thirteen per section, five items under one
 parent with fewer at each deeper level, and four top-level items per
 section. The exact thresholds live in the binary; the lint
 reports them. When it fires, the fix is to merge siblings, lift a level
