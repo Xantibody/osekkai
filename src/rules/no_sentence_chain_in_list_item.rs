@@ -50,7 +50,7 @@ pub fn check(doc: &Document, out: &mut Vec<Finding>) {
     });
 }
 
-fn chains(text: &str) -> bool {
+pub(crate) fn chains(text: &str) -> bool {
     let unquoted = without_quotes(text);
     let body = unquoted.trim_end().trim_end_matches('。');
     body.contains('。') || SENTENCE_OPENERS.iter().any(|w| opens_sentence(body, w))
