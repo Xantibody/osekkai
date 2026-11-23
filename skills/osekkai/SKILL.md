@@ -455,7 +455,9 @@ fictional examples.
 ## Worked examples
 
 `tests/fixtures/examples/` in the osekkai repository holds the author's
-accepted outputs: one investigation memo for a teammate, and one
+accepted outputs: one investigation memo for a teammate, one
 discussion summarized twice, for an outsider and for the manager who has
-to decide. Read them to see the state change the shape before writing a
+to decide, a PR body with a diagram and its caption, and an end-of-task
+report that ends with its URL lines and a yes-or-no question, with no
+`purpose`. Read them to see the state change the shape before writing a
 new kind of document.
